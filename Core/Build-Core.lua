@@ -1,37 +1,66 @@
-project "Core"
-   kind "StaticLib"
-   language "C++"
-   cppdialect "C++20"
-   targetdir "Binaries/%{cfg.buildcfg}"
-   staticruntime "off"
+project("Core")
+kind("StaticLib")
+language("C++")
+cppdialect("C++20")
+-- targetdir("Binaries/%{cfg.buildcfg}")
+staticruntime("off")
 
-   files { "Source/**.h", "Source/**.cpp" }
+pchheader "epch.h"
+pchsource "Source/epch.cpp"
 
-   includedirs
-   {
-      "Source"
-   }
+files { "Source/**.h", "Source/**.cpp" }
 
-   targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
-   objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
+includedirs {
+	"Source",
+	IncludeDir.glfw,
+	IncludeDir.glew,
+	IncludeDir.glm,
+}
 
-   filter "system:windows"
-       systemversion "latest"
-       defines { }
+libdirs
+{
+	LibDir.glfw,
+	LibDir.glew,
+}
 
-   filter "configurations:Debug"
-       defines { "DEBUG" }
-       runtime "Debug"
-       symbols "On"
 
-   filter "configurations:Release"
-       defines { "RELEASE" }
-       runtime "Release"
-       optimize "On"
-       symbols "On"
+links {
+	"glew32",
+	"glfw3dll",
+	"opengl32",
+}
 
-   filter "configurations:Dist"
-       defines { "DIST" }
-       runtime "Release"
-       optimize "On"
-       symbols "Off"
+
+defines {
+	"GLFW_DLL",
+	"CRT_SECURE_NO_WARNINGS",
+	"_UNICODE", "UNICODE"
+}
+
+
+
+
+targetdir("../bin/" .. OutputDir .. "/%{prj.name}")
+objdir("../bin/obj/" .. OutputDir .. "/%{prj.name}")
+
+filter("system:windows")
+systemversion("latest")
+defines {}
+
+
+filter("configurations:Debug")
+defines { "DEBUG" }
+runtime("Debug")
+symbols("On")
+
+filter("configurations:Release")
+defines { "RELEASE" }
+runtime("Release")
+optimize("On")
+symbols("On")
+
+-- filter("configurations:Dist")
+-- defines { "DIST" }
+-- runtime("Release")
+-- optimize("On")
+-- symbols("Off")

@@ -1,6 +1,9 @@
 # Directories
 .vs/
-Binaries/
+Bin/
+# Core/Dependencies/
+**/Debug/
+**/Release/
 
 # Files
 *.vcxproj
@@ -9,6 +12,12 @@ Binaries/
 *.sln
 *.log
 Makefile
+
+# Generated Files
+**.pdb
+**.tlog
+
+
 
 # Exclude
 !Vendor/Binaries
