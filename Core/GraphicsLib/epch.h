@@ -8,4 +8,6 @@
 #include <unordered_map>
 #include <vector>
 
+#define E_API __declspec(dllimport) 
+
 #endif //EPCH.H

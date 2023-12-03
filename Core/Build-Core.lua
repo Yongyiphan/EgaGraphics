@@ -6,12 +6,12 @@ cppdialect("C++20")
 staticruntime("off")
 
 pchheader "epch.h"
-pchsource "Source/epch.cpp"
+pchsource "GraphicsLib/epch.cpp"
 
-files { "Source/**.h", "Source/**.cpp" }
+files { "GraphicsLib/**.h", "GraphicsLib/**.cpp" }
 
 includedirs {
-	"Source",
+	"GraphicsLib",
 	IncludeDir.glfw,
 	IncludeDir.glew,
 	IncludeDir.glm,

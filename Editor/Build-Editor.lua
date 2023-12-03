@@ -9,7 +9,7 @@ files({ "Source/**.h", "Source/**.cpp" })
 
 includedirs({
 	"Source",
-	"../Core/Source",
+	"../Core/GraphicsLib",
 })
 
 links {
@@ -17,20 +17,14 @@ links {
 }
 
 externalincludedirs {
-	"../Core/" .. IncludeDir.glfw,
-	"../Core/" .. IncludeDir.glew,
-	"../Core/" .. IncludeDir.glm,
+	IncludeDir.glfw,
+	IncludeDir.glew,
+	IncludeDir.glm,
 }
 
-dependson { "Core" }
+-- dependson { "Core" }
 
 
-
--- libdirs {
--- 	"../Binaries/" .. OutputDir .. "/%{prj.name}",
--- 	"../Core/%{LibDir.glfw}",
--- 	"../Core/%{LibDir.glew}",
--- }
 
 defines {
 	"_CONSOLE"
@@ -38,6 +32,16 @@ defines {
 
 targetdir("../bin/" .. OutputDir .. "/%{prj.name}")
 objdir("../bin/obj/" .. OutputDir .. "/%{prj.name}")
+
+local glewpb = PBCmd.glew.cmd .. PBCmd.glew.Dir .. PBCmd.glew.file .. PBCmd.glew.target .. PBCmd.glew.file
+local glfwpb = PBCmd.glfw.cmd .. PBCmd.glfw.Dir .. PBCmd.glfw.file .. PBCmd.glfw.target .. PBCmd.glfw.file
+
+
+postbuildcommands {
+	glewpb,
+	glfwpb,
+}
+
 
 filter("system:windows")
 systemversion("latest")
