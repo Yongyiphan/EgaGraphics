@@ -1,6 +1,6 @@
 # Directories
 .vs/
-Bin/
+Binaries/
 # Core/Dependencies/
 **/Debug/
 **/Release/

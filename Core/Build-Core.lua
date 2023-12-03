@@ -40,8 +40,8 @@ defines {
 
 
 
-targetdir("../bin/" .. OutputDir .. "/%{prj.name}")
-objdir("../bin/obj/" .. OutputDir .. "/%{prj.name}")
+targetdir("../Binaries/" .. OutputDir .. "/%{prj.name}")
+objdir("../Binaries/obj/" .. OutputDir .. "/%{prj.name}")
 
 filter("system:windows")
 systemversion("latest")

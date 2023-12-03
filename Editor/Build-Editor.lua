@@ -40,8 +40,8 @@ defines {
 	"_CONSOLE"
 }
 
-targetdir("../bin/" .. OutputDir .. "/%{prj.name}")
-objdir("../bin/obj/" .. OutputDir .. "/%{prj.name}")
+targetdir("../Binaries/" .. OutputDir .. "/%{prj.name}")
+objdir("../Binaries/obj/" .. OutputDir .. "/%{prj.name}")
 
 local glewpb = PBCmd.glew.cmd .. PBCmd.glew.Dir .. PBCmd.glew.file .. PBCmd.glew.target .. PBCmd.glew.file
 local glfwpb = PBCmd.glfw.cmd .. PBCmd.glfw.Dir .. PBCmd.glfw.file .. PBCmd.glfw.target .. PBCmd.glfw.file
