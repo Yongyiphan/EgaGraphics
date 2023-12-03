@@ -17,18 +17,18 @@ includedirs {
 	IncludeDir.glm,
 }
 
-libdirs
-{
-	LibDir.glfw,
-	LibDir.glew,
-}
+-- libdirs
+-- {
+-- 	LibDir.glfw,
+-- 	LibDir.glew,
+-- }
 
 
-links {
-	"glew32",
-	"glfw3dll",
-	"opengl32",
-}
+-- links {
+-- 	"glew32",
+-- 	"glfw3dll",
+-- 	"opengl32",
+-- }
 
 
 defines {

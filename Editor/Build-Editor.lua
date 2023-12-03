@@ -12,9 +12,6 @@ includedirs({
 	"../Core/GraphicsLib",
 })
 
-links {
-	"Core"
-}
 
 externalincludedirs {
 	IncludeDir.glfw,
@@ -22,7 +19,20 @@ externalincludedirs {
 	IncludeDir.glm,
 }
 
--- dependson { "Core" }
+libdirs
+{
+	LibDir.glfw,
+	LibDir.glew,
+}
+
+links {
+	"Core",
+	"opengl32",
+	"glew32",
+	"glfw3dll",
+}
+
+dependson { "Core" }
 
 
 
