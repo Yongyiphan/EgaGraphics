@@ -21,4 +21,4 @@ Makefile
 
 # Exclude
 !Vendor/Binaries
-#!Vendor/Dependencies
+!Vendor/Dependencies
