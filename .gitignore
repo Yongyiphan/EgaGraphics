@@ -1,9 +1,10 @@
 # Directories
 .vs/
 Binaries/
+
 # Core/Dependencies/
-**/Debug/
-**/Release/
+/Debug/
+/Release/
 
 # Files
 *.vcxproj
@@ -22,3 +23,5 @@ Makefile
 # Exclude
 !Vendor/Binaries
 !Vendor/Dependencies
+!bin/
+!include/
