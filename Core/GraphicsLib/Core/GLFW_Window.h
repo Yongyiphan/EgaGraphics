@@ -25,7 +25,8 @@ namespace Core {
 								void CleanUp();
 								void pollEvents() const noexcept;
 								void swapBuffers() const noexcept;
-								void CloseWindow();
+								bool ShouldClose() const noexcept;
+								void CloseWindow() const noexcept;
 
 								glm::vec2 GetDimensions();
 								void SetDimensions(int, int);

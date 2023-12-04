@@ -11,6 +11,12 @@ int main()
 				App->Init(Window_Width, Window_Height);
 				while (App->Run()) {
 								//App->AppWindow->CloseWindow();
+								if (App->AppInput->IsKeyPress(MOUSE_LEFT)) {
+												std::cout << "Mouse Pressed\n";
+								}
+								if (App->AppInput->IsKeyHold(MOUSE_LEFT)) {
+												std::cout << "Mouse Hold\n";
+								}
 
 								// Require to prep for next cycle
 								App->Next();

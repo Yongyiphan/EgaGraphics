@@ -57,6 +57,7 @@ namespace Core {
 												EventDispatcher::GetInstance().DispatchEvent(GL_CORE_EVENT_MOUSEBUTTON, button, action, mod);
 												});
 
+
 								glfwSetScrollCallback(m_pWindow, [](GLFWwindow*, double xoffset, double yoffset) {
 												EventDispatcher::GetInstance().DispatchEvent(GL_CORE_EVENT_MOUSESCROLL, xoffset, yoffset);
 												});
@@ -95,9 +96,12 @@ namespace Core {
 								glfwSwapBuffers(m_pWindow);
 
 				}
-				void GLWindow::CloseWindow() {
-								glfwSetWindowShouldClose(m_pWindow, GLFW_FALSE);
+				bool GLWindow::ShouldClose() const noexcept {
+								return glfwWindowShouldClose(m_pWindow);
 
+				}
+				void GLWindow::CloseWindow() const noexcept {
+								glfwSetWindowShouldClose(m_pWindow, GLFW_FALSE);
 				}
 
 				glm::vec2 GLWindow::GetDimensions() {

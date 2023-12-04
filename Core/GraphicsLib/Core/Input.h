@@ -1,8 +1,23 @@
 #pragma once
 #include "GLFW_Window.h"
+#include <optional>
+
+#define MOUSE_LEFT GLFW_MOUSE_BUTTON_1
+#define MOUSE_RIGHT GLFW_MOUSE_BUTTON_2
+#define MOUSE_MIDDLE GLFW_MOUSE_BUTTON_3
+
 
 
 namespace Core {
+				struct KeyInfo {
+								int key;
+								int scancode;
+								int p_action;
+								int c_action;
+								int mod;
+								void Reset() { p_action = -1; c_action = -1; }
+				};
+
 				class Input {
 				public:
 								Input();
@@ -11,6 +26,23 @@ namespace Core {
 								void mousescroll_cb(double xoffset, double yoffset);
 								void mousepos_cb(double xpos, double ypos);
 								//void framebuffersize_cb();
+
+								bool IsKeyPress(int key);
+								bool IsKeyHold(int key);
+
+								bool IsMousePress(int key);
+								bool IsMouseHold(int key);
+								void IsMouseScroll();
+
+
+				private:
+								
+								KeyInfo* findKey(int key);
+
+								std::map<int, KeyInfo> m_KeyList;
+								double mouse_scroll_x{}, mouse_scroll_y{};
+								double mouse_pos_x{}, mouse_pos_y{};
+								
 				};
 
 }

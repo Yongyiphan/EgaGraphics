@@ -25,13 +25,13 @@ namespace Core {
 				}
 
 				bool GL_Core::Run() {
-								int close = ~glfwWindowShouldClose(AppWindow->GetWindow());
-								AppWindow->pollEvents();
+								bool close = !AppWindow->ShouldClose();
 								return close;
 				}
 
 				void GL_Core::Next() {
 								AppWindow->swapBuffers();
+								AppWindow->pollEvents();
 				}
 
 }

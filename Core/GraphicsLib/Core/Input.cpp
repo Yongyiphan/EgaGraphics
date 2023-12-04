@@ -27,10 +27,65 @@ namespace Core {
 																}));
 				}
 
-				void Input::key_cb(int key, int scancode, int action, int mod) {}
-				void Input::mousebutton_cb(int button, int action, int mod) {}
-				void Input::mousescroll_cb(double xoffset, double yoffset) {}
-				void Input::mousepos_cb(double xpos, double ypos) {
-								std::cout << "Xpos: (" << xpos << " | " << ypos << ")\n";
+				//////////////////////////////////////////////////////////////////
+				///																																																												///
+				///																				INPUT	CALL BACKS																					   ///
+				///																																																												///
+				//////////////////////////////////////////////////////////////////
+
+				void Input::key_cb(int key, int scancode, int action, int mod) {
+								KeyInfo* m_key = findKey(key);
+								m_key->scancode = scancode;
+								m_key->p_action = m_key->c_action;
+								m_key->c_action = action;
+								m_key->mod = mod;
+
+								//std::cout << key << ": " << action << std::endl;
 				}
+
+				void Input::mousebutton_cb(int button, int action, int mod) {
+								KeyInfo* m_key = findKey(button);
+								m_key->p_action = m_key->c_action;
+								m_key->c_action = action;
+								m_key->mod = mod;
+								std::cout << button << ": " << action << std::endl;
+				}
+
+				void Input::mousescroll_cb(double xoffset, double yoffset) {
+								mouse_scroll_x = xoffset;
+								mouse_scroll_y = yoffset;
+				}
+
+				void Input::mousepos_cb(double xpos, double ypos) {
+								mouse_pos_x = xpos;
+								mouse_pos_y = ypos;
+								//std::cout << "Xpos: (" << xpos << " | " << ypos << ")\n";
+				}
+
+				bool Input::IsKeyPress(int key) {
+								KeyInfo* fkey = findKey(key);
+								bool correct = (fkey && (fkey->p_action == GLFW_PRESS && fkey->c_action == GLFW_RELEASE)) ? true : false;
+								if (fkey && fkey->c_action == GLFW_RELEASE) {
+												//std::cout << fkey->key << ": " << fkey->c_action << std::endl;
+												fkey->Reset();
+								}
+								return correct;
+				}
+				bool Input::IsKeyHold(int key) {
+								KeyInfo* fkey = findKey(key);
+								bool _true = (fkey && (fkey->c_action == GLFW_REPEAT || fkey->c_action == GLFW_PRESS)) ? true : false;
+								if (fkey && fkey->c_action == GLFW_RELEASE) {
+												//std::cout << fkey->key << ": " << fkey->c_action << std::endl;
+												fkey->Reset();
+								}
+								return _true;
+				}
+
+				void Input::IsMouseScroll() {}
+
+
+				KeyInfo* Input::findKey(int key) {
+								return &m_KeyList[key];
+				}
+
 }
