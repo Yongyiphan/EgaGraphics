@@ -6,7 +6,7 @@ class ISingleton {
 
 protected:
 				ISingleton() = default;
-				ISingleton(const ISingeton&) = delete;
+				ISingleton(const ISingleton&) = delete;
 				ISingleton(ISingleton&&) = delete;
 				ISingleton& operator=(const ISingleton&) = delete;
 				ISingleton& operator=(const ISingleton&&) = delete;

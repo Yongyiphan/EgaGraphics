@@ -16,7 +16,7 @@ namespace Core {
 				}
 
 				void GL_Core::Init(int width, int height) {
-								AppWindow->Init(width, height, AppInput);
+								AppWindow->Init(width, height);
 				}
 
 				GL_Core::~GL_Core() {
@@ -25,12 +25,13 @@ namespace Core {
 				}
 
 				bool GL_Core::Run() {
-								return glfwWindowShouldClose(AppWindow->GetWindow());
+								int close = ~glfwWindowShouldClose(AppWindow->GetWindow());
+								AppWindow->pollEvents();
+								return close;
 				}
 
 				void GL_Core::Next() {
 								AppWindow->swapBuffers();
-								AppWindow->pollEvents();
 				}
 
 }

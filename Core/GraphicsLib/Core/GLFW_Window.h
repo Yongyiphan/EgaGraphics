@@ -19,24 +19,17 @@ namespace Core {
 												BORDERLESS_FULLSCREEN
 								};
 
-								GLWindow() {};
+								GLWindow();
 								~GLWindow() {};
-								void Init(int width, int height, const std::shared_ptr<Core::Input>&);
+								void Init(int width, int height);
 								void CleanUp();
 								void pollEvents() const noexcept;
 								void swapBuffers() const noexcept;
 								void CloseWindow();
 
-
-								/////////////////////////////////////////////////////////
-								///																																																			///
-								///                   CALLBACKS																							///					
-								///																																																			///
-								/////////////////////////////////////////////////////////
-								static void Window_size_cb(GLFWwindow*, int, int);
-								static void Framebuffer_size_cb(GLFWwindow*, int width, int height);
-
 								glm::vec2 GetDimensions();
+								void SetDimensions(int, int);
+
 								inline GLFWwindow* GetWindow() { return m_pWindow; }
 
 				private:

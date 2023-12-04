@@ -11,5 +11,7 @@
 
 #define E_API __declspec(dllimport) 
 #define unref(x) (void)x
+#include "Defines.h"
+#include "Core/Event.h"
 
 #endif //EPCH.H

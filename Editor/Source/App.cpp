@@ -10,7 +10,7 @@ int main()
 				int Window_Height = 720;
 				App->Init(Window_Width, Window_Height);
 				while (App->Run()) {
-								App->AppWindow->CloseWindow();
+								//App->AppWindow->CloseWindow();
 
 								// Require to prep for next cycle
 								App->Next();

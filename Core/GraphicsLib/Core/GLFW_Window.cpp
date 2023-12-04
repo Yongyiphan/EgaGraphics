@@ -1,16 +1,26 @@
 #include <epch.h>
 #include "Core.h"
 #include "GLFW_Window.h"
+#include "Event.h"
 
 namespace Core {
 
+				GLWindow::GLWindow() {
 
-				void GLWindow::Init(int width, int height, const std::shared_ptr<Core::Input>& input) {
+								EventDispatcher::GetInstance().RegisterEvent(
+												new Event<int, int>(GL_CORE_EVENT_WINDOW_RESIZE, [&](int w, int h) {
+																SetDimensions(w, h);
+																})
+								);
+				}
+
+				void GLWindow::Init(int width, int height) {
 
 								int success = glfwInit();
 								if (success == GLFW_FALSE) {
 												return;
 								}
+
 								Dimension.x = static_cast<float>(width);
 								Dimension.y = static_cast<float>(height);
 
@@ -35,9 +45,25 @@ namespace Core {
 												return;
 								}
 								// Set Callbacks
-								glfwSetWindowSizeCallback(m_pWindow, Window_size_cb);
-								glfwSetFramebufferSizeCallback(m_pWindow, Framebuffer_size_cb);
+								glfwSetWindowSizeCallback(m_pWindow, [](GLFWwindow* window, int width, int height) {
+												EventDispatcher::GetInstance().DispatchEvent(GL_CORE_EVENT_WINDOW_RESIZE, width, height);
+												});
 
+								glfwSetKeyCallback(m_pWindow, [](GLFWwindow*, int key, int scancode, int action, int mods) {
+												EventDispatcher::GetInstance().DispatchEvent(GL_CORE_EVENT_KEYPRESS, key, scancode, action, mods);
+												});
+
+								glfwSetMouseButtonCallback(m_pWindow, [](GLFWwindow*, int button, int action, int mod) {
+												EventDispatcher::GetInstance().DispatchEvent(GL_CORE_EVENT_MOUSEBUTTON, button, action, mod);
+												});
+
+								glfwSetScrollCallback(m_pWindow, [](GLFWwindow*, double xoffset, double yoffset) {
+												EventDispatcher::GetInstance().DispatchEvent(GL_CORE_EVENT_MOUSESCROLL, xoffset, yoffset);
+												});
+
+								glfwSetCursorPosCallback(m_pWindow, [](GLFWwindow*, double xpos, double ypos) {
+												EventDispatcher::GetInstance().DispatchEvent(GL_CORE_EVENT_MOUSEPOSITION, xpos, ypos);
+												});
 
 
 								glfwMakeContextCurrent(m_pWindow);
@@ -63,9 +89,10 @@ namespace Core {
 
 
 				void GLWindow::pollEvents() const noexcept {
-
+								glfwPollEvents();
 				}
 				void GLWindow::swapBuffers() const noexcept {
+								glfwSwapBuffers(m_pWindow);
 
 				}
 				void GLWindow::CloseWindow() {
@@ -76,22 +103,14 @@ namespace Core {
 				glm::vec2 GLWindow::GetDimensions() {
 								return Dimension;
 				}
+				void GLWindow::SetDimensions(int w, int h) {
+								Dimension.x = static_cast<float>(w);
+								Dimension.y = static_cast<float>(h);
+				}
+
 				void GLWindow::CleanUp() {
 								glfwDestroyWindow(m_pWindow);
 								glfwTerminate();
 				}
 
-				//////////////////////////////////////////////////////////////////
-				///																																																												///
-				///                 STATIC CALLBACK FUNCTIONS	                 ///
-				///																																																												///
-				//////////////////////////////////////////////////////////////////
-
-				void GLWindow::Window_size_cb(GLFWwindow*, int, int) {
-
-				}
-
-				void GLWindow::Framebuffer_size_cb(GLFWwindow*, int width, int height) {
-
-				}
 }
