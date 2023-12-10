@@ -1,7 +1,6 @@
 -- premake5.lua
 workspace("EgaGraphics")
 -- "%{wks.location}" == sln.dir
---
 architecture("x64")
 configurations({ "Debug", "Release" })
 startproject("Editor")
@@ -10,36 +9,28 @@ startproject("Editor")
 filter("system:windows")
 buildoptions({ "/EHsc", "/Zc:preprocessor", "/Zc:__cplusplus" })
 
--- Relative to Core/
+-- Relative to sln.dir
 IncludeDir         = {}
-IncludeDir["glfw"] = "../Vendor/Dependencies/glfw-3.3.8.bin.WIN64/include"
-IncludeDir["glew"] = "../Vendor/Dependencies/glew-2.2.0/include"
-IncludeDir["glm"]  = "../Vendor/Dependencies/glm-0.9.9.8/glm"
+IncludeDir["glfw"] = "%{wks.location}/Vendor/Dependencies/glfw-3.3.8.bin.WIN64/include"
+IncludeDir["glew"] = "%{wks.location}/Vendor/Dependencies/glew-2.2.0/include"
+IncludeDir["glm"]  = "%{wks.location}/Vendor/Dependencies/glm-0.9.9.8/glm"
 
+--Relative to sln.dir
 LibDir             = {}
-LibDir["glfw"]     = "../Vendor/Dependencies/glfw-3.3.8.bin.WIN64/lib-vc2022"
-LibDir["glew"]     = "../Vendor/Dependencies/glew-2.2.0/lib/Release/x64"
+LibDir["glfw"]     = "%{wks.location}/Vendor/Dependencies/glfw-3.3.8.bin.WIN64/lib-vc2022"
+LibDir["glew"]     = "%{wks.location}/Vendor/Dependencies/glew-2.2.0/lib/Release/x64"
 
--- Post Build Commands
-PBCmd              = {}
-PBCmd["glfw"]      = {
-	cmd = "{COPYFILE} ",
-	file = "glfw3.dll",
-	Dir = "%{wks.location}/Vendor/Dependencies/glfw-3.3.8.bin.WIN64/lib-vc2022/",
-	target = " %{cfg.targetdir}/"
-}
+AssetsDir          = {}
+PostLibDir         = {}
+PostLibDir["glfw"] = "%{wks.location}Vendor/Dependencies/glfw-3.3.8.bin.WIN64/lib-vc2022"
+PostLibDir["glew"] = "%{wks.location}Vendor/Dependencies/glew-2.2.0/bin/Release/x64"
 
-PBCmd["glew"]      = {
-	cmd = "{COPYFILE} ",
-	file = "glew32.dll",
-	Dir = "%{wks.location}/Vendor/Dependencies/glew-2.2.0/bin/Release/x64/",
-	target = " %{cfg.targetdir}/"
-}
 
-OutputDir          = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
+OutputDir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
 
-group("Core")
-include("Core/Build-Core.lua")
-group("")
+group "GLib"
+include("GL_Core/Build-GL_Core.lua")
+-- include("Vulkan_Core/Build-Vulkan_Core.lua")
+group ""
 
 include "Editor/Build-Editor.lua"

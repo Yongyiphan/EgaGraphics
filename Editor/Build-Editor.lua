@@ -9,11 +9,12 @@ files({ "Source/**.h", "Source/**.cpp" })
 
 includedirs({
 	"Source",
-	"../Core/GraphicsLib",
 })
 
 
 externalincludedirs {
+	IncludeDir.GL_Core,
+	IncludeDir.GL_Core .. "/OpenGL_E",
 	IncludeDir.glfw,
 	IncludeDir.glew,
 	IncludeDir.glm,
@@ -26,13 +27,13 @@ libdirs
 }
 
 links {
-	"Core",
+	"GL_Core",
 	"opengl32",
 	"glew32",
 	"glfw3dll",
 }
 
-dependson { "Core" }
+dependson { "GL_Core" }
 
 
 
@@ -42,14 +43,14 @@ defines {
 
 targetdir("../Binaries/" .. OutputDir .. "/%{prj.name}")
 objdir("../Binaries/obj/" .. OutputDir .. "/%{prj.name}")
+debugdir("../Binaries/" .. OutputDir .. "/%{prj.name}")
 
-local glewpb = PBCmd.glew.cmd .. PBCmd.glew.Dir .. PBCmd.glew.file .. PBCmd.glew.target .. PBCmd.glew.file
-local glfwpb = PBCmd.glfw.cmd .. PBCmd.glfw.Dir .. PBCmd.glfw.file .. PBCmd.glfw.target .. PBCmd.glfw.file
-
+local TargetDir = " %{cfg.targetdir}/"
 
 postbuildcommands {
-	glewpb,
-	glfwpb,
+	"{COPYDIR}  " .. AssetsDir.GL_Core.dir .. " " .. TargetDir .. AssetsDir.GL_Core.name,
+	"{COPYFILE} " .. PostLibDir.glew .. "/glew32.dll " .. TargetDir .. "glew32.dll",
+	"{COPYFILE} " .. PostLibDir.glfw .. "/glfw3.dll " .. TargetDir .. "glfw3.dll",
 }
 
 

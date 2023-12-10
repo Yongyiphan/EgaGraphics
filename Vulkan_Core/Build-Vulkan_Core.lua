@@ -1,40 +1,36 @@
-project("Core")
+project("Vulkan_Core")
 kind("StaticLib")
 language("C++")
 cppdialect("C++20")
 -- targetdir("Binaries/%{cfg.buildcfg}")
 staticruntime("off")
 
-pchheader "epch.h"
-pchsource "GraphicsLib/epch.cpp"
+local FilesDir = "Vulkan_E"
 
-files { "GraphicsLib/**.h", "GraphicsLib/**.cpp" }
+-- pchheader "epch.h"
+-- pchsource(FilesDir .. "/epch.cpp")
+
+
+files {
+	FilesDir .. "/**.h",
+	FilesDir .. "/**.cpp",
+	FilesDir .. "/**.inl",
+}
 
 includedirs {
-	"GraphicsLib",
+	FilesDir,
 	IncludeDir.glfw,
 	IncludeDir.glew,
 	IncludeDir.glm,
 }
 
--- libdirs
--- {
--- 	LibDir.glfw,
--- 	LibDir.glew,
--- }
-
-
--- links {
--- 	"glew32",
--- 	"glfw3dll",
--- 	"opengl32",
--- }
 
 
 defines {
 	"GLFW_DLL",
 	"CRT_SECURE_NO_WARNINGS",
-	"_UNICODE", "UNICODE"
+	"_UNICODE", "UNICODE",
+	"VULKAN_E"
 }
 
 

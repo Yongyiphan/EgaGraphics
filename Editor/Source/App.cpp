@@ -1,6 +1,12 @@
-#include <Core/Core.h>
+#define OpenGL_E 
+//#define Vulkan_E
 
-
+#ifdef OpenGL_E
+#include <OpenGL_E/Core/Core.h>
+#endif
+#ifdef Vulkan_E
+#include <Vulkan_E/Core/Core.h>
+#endif
 
 int main()
 {
@@ -11,11 +17,8 @@ int main()
 				App->Init(Window_Width, Window_Height);
 				while (App->Run()) {
 								//App->AppWindow->CloseWindow();
-								if (App->AppInput->IsKeyPress(MOUSE_LEFT)) {
-												std::cout << "Mouse Pressed\n";
-								}
-								if (App->AppInput->IsKeyHold(MOUSE_LEFT)) {
-												std::cout << "Mouse Hold\n";
+								if (App->AppInput->IsKeyPress(GLFW_KEY_ESCAPE)) {
+												App->AppWindow->CloseWindow();
 								}
 
 								// Require to prep for next cycle

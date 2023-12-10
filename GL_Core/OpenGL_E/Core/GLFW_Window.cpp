@@ -101,7 +101,7 @@ namespace Core {
 
 				}
 				void GLWindow::CloseWindow() const noexcept {
-								glfwSetWindowShouldClose(m_pWindow, GLFW_FALSE);
+								glfwSetWindowShouldClose(m_pWindow, GLFW_TRUE);
 				}
 
 				glm::vec2 GLWindow::GetDimensions() {
