@@ -1,7 +1,6 @@
 #include <epch.h>
-#include <filesystem>
 #include <Windows.h>
-#include <algorithm>
+#include <GL/glew.h>
 
 std::filesystem::path exe_dir;
 std::filesystem::path asset_dir;
@@ -49,4 +48,19 @@ namespace Core {
 								return PathError::INVALID_DIR;
 				}
 
+				void GLClearError() {
+								while (glGetError() != GL_NO_ERROR);
+				}
+
+				std::pair<bool, std::string> GLCheckError(const char* FILE, int LINE) {
+								while (GLenum err = glGetError()) {
+												std::stringstream ss;
+												ss << "Err Code: " << err << " at: \n" << FILE << " (" << LINE << ")";
+#ifdef _DEBUG
+												ASSERT_MSG(ss.str());
+#endif
+												return std::make_pair<bool, std::string>(false, ss.str());
+								}
+								return std::make_pair<bool, std::string>(true, "Success");
+				}
 }

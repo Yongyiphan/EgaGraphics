@@ -6,28 +6,46 @@
 namespace GL_Graphics {
 
 
-				template <>
-				void BufferLayoutElement<glm::vec2>::GetSpecs() {
-								m_DataSize = sizeof(glm::vec2);
-								m_SubElementCount = 2;
+				void BufferData::Resize() {
+								m_TotalSize = 0;
+								size_t t_datapos{ 0 };
+								for (auto ele : m_Data) {
+												ele->GetDataPos() = static_cast<GLsizei>(t_datapos);
+												ele->GetOffset() = m_TotalSize;
+												m_TotalSize += ele->GetTotalDataSize();
+												if (ele->GetDataSize() == sizeof(glm::mat3)) {
+																t_datapos += 3;
+												}
+												else if (ele->GetDataSize() == sizeof(glm::mat4)) {
+																t_datapos += 4;
+												}
+												else {
+																++t_datapos;
+												}
+								}
 				}
 
-				template <>
-				void BufferLayoutElement<glm::vec3>::GetSpecs() {
-								m_DataSize = sizeof(glm::vec3);
-								m_SubElementCount = 3;
+				void GLBuffer::BufferID::Reset() {
+								if (glIsVertexArray(vaoid) == GL_TRUE) {
+												glDeleteVertexArrays(1, &vaoid);
+												vaoid = 0;
+								}
+								if (glIsBuffer(vboid) == GL_TRUE) {
+												GLCall(glDeleteBuffers(1, &vboid));
+												vboid = 0;
+								}
+								if (glIsBuffer(pboid) == GL_TRUE) {
+												GLCall(glDeleteBuffers(1, &pboid));
+												pboid = 0;
+								}
 				}
 
-				template <>
-				void BufferLayoutElement<glm::vec4>::GetSpecs() {
-								m_DataSize = sizeof(glm::vec4);
-								m_SubElementCount = 4;
+				void BufferSystem::Bind(GL_ID p_ID) {
+								GLCall(glBindVertexArray(p_ID));
 				}
 
-				template<>
-				void BufferLayoutElement<float>::GetSpecs() {
-								m_DataSize = sizeof(float);
-								m_SubElementCount = 1;
+				void BufferSystem::UnBind() {
+								GLCall(glBindVertexArray(0));
 				}
 
 

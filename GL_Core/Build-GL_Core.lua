@@ -15,6 +15,7 @@ files {
 	FilesDir .. "/**.h",
 	FilesDir .. "/**.cpp",
 	FilesDir .. "/**.inl",
+	FilesDir .. "/**.hpp",
 }
 
 IncludeDir.GL_Core     = "%{wks.location}/GL_Core"

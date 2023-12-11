@@ -1,6 +1,6 @@
 #include <epch.h>
 #include "Core.h"
-#include "Buffer/Buffer.h"
+#include "Models/Model.h"
 
 namespace Core {
 
@@ -20,6 +20,7 @@ namespace Core {
 								AppWindow->Init(width, height);
 								Globals_Init();
 								SetupShaders();
+								auto __ = GL_Graphics::CreateQuadModel();
 
 
 
@@ -49,19 +50,4 @@ namespace Core {
 												}));
 				}
 
-				void GLClearError() {
-								while (glGetError() != GL_NO_ERROR);
-				}
-
-				std::pair<bool, std::string> GLCheckError(const char* FILE, int LINE) {
-								while (GLenum err = glGetError()) {
-												std::stringstream ss;
-												ss << "Err Code: " << err << " at: \n" << FILE << " (" << LINE << ")";
-#ifdef _DEBUG
-												ASSERT_MSG(ss.str());
-#endif
-												return std::make_pair<bool, std::string>(false, ss.str());
-								}
-								return std::make_pair<bool, std::string>(true, "Success");
-				}
 }

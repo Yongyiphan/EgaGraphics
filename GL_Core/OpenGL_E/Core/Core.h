@@ -1,4 +1,6 @@
 #pragma once
+#ifndef CORE_H
+#define CORE_H
 #include "Defines.h"
 #include "GLFW_Window.h"
 #include "Input.h"
@@ -23,42 +25,7 @@ namespace Core {
 								void SetupShaders();
 				};
 
-				void GLClearError();
-				std::pair<bool, std::string> GLCheckError(const char* FILE, int LINE);
 
 }
 
-// Macro definition to wrap gl commands within a error check
-#ifdef _DEBUG
-#define GLCall( x ) [&](){\
-			 Core::GLClearError(); \
-			 x; \
-			 std::pair<bool, std::string> status = Core::GLCheckError(__FILE__, __LINE__);\
-			if(!status.first) {\
-										ASSERT_MSG(status.second);\
-			}\
-			return status.first;\
-			}()
-
-#define GLCallV( x ) [&]() { \
-     Core::GLClearError(); \
-     auto retVal = x; \
-					std::pair<bool, std::string> status = Core::GLCheckError(__FILE__, __LINE__);\
-					if(!status.first) {\
-								ASSERT_MSG(status.second);\
-					}\
-     return retVal; \
-   }()
-#else
-#define GLCall( x ) [&](){\
-			x; \
-			return true; \
-			}()
-#define GLCallV( x ) [&]() { \
-     Graphics::GLClearError(); \
-     auto retVal = x; \
-		 std::pair<bool, std::string> status = Graphics::GLCheckError(__FILE__, __LINE__);\
-     return retVal; \
-   }()
-#endif
-
+#endif //CORE_H
