@@ -5,6 +5,7 @@
 ### Project Setup: Premake
 
 > Simple system cycle using GLFW
+> Editor and OpenGL Library Project.
 > namespaces Core, GL\_Graphics
 
 ### Namespace: Core
@@ -38,13 +39,14 @@ std::function<void(Args...)>
 * Generic Base models [-1.0f,1.0f] e.g Point, Line, Quad, Circle
 
 
-# Feature: Buffer Layout Element Specialization for Different Types
+# Difficulties
+### Feature: Buffer Layout Element Specialization for Different Types
 
 * Vec2, Vec3, Vec4, Mat3, Mat4, float, int, unsigned short
 
-## Implementation
+#### Implementation
 
-* Template specialize member function that reassigneds member varaiables instead of constructor
+* Template specialize member function that reassigns member varaiables instead of constructor
 
 ``` cpp
 template <typename T>
@@ -54,6 +56,10 @@ template <>
 Buffer<float>::GetSpecs(){}
 ```
 
-## Error: Buffer Multiple defnitions
-#### Fix:
+### Error: Buffer Multiple defnitions
+#### Fix: (12/12/2023)
 Somehow "inline" is necessary before very defnition
+
+### Error: No Definition Overload (13/12/2023)
+##### Potential fix:
+Check if <T> is the same type as std::vector<T>

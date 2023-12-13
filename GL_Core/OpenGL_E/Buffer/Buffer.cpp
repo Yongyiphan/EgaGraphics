@@ -25,6 +25,13 @@ namespace GL_Graphics {
 								}
 				}
 
+				BufferData::~BufferData() {
+								for (auto layout : m_Data) {
+												layout->~IBufferLayout();
+								}
+
+				}
+
 				void GLBuffer::BufferID::Reset() {
 								if (glIsVertexArray(vaoid) == GL_TRUE) {
 												glDeleteVertexArrays(1, &vaoid);

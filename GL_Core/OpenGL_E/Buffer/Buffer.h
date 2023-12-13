@@ -7,7 +7,7 @@
 namespace GL_Graphics {
 
 				using GL_ID = GLuint;
-				using idx_type = unsigned short;
+				using index_type = unsigned short;
 
 				struct IBufferLayout {
 								virtual size_t GetElementCount() = 0;
@@ -32,9 +32,10 @@ namespace GL_Graphics {
 								GLint m_Dimensions{ 2 };
 								GLenum GL_Type{ GL_FLOAT };
 								void GetSpecs() {};
+
 				public:
 								BufferLayoutElement();
-								BufferLayoutElement(const std::string& p_name, bool p_IsInstanced = false, size_t reserve = 0);
+								//BufferLayoutElement(const std::string& p_name, bool p_IsInstanced = false, size_t reserve = 0);
 								BufferLayoutElement(const std::string& p_name, std::vector<T> rhs, bool p_IsInstanced = false, size_t reserve = 0);
 								~BufferLayoutElement();
 
@@ -56,12 +57,16 @@ namespace GL_Graphics {
 
 				class BufferData {
 								std::vector<std::shared_ptr<IBufferLayout>>m_Data;
-								std::shared_ptr<BufferLayoutElement<idx_type>> m_IdxBuffer;
+								std::shared_ptr<BufferLayoutElement<index_type>> m_IdxBuffer;
 								size_t m_TotalSize{ 0 };
+								GLenum m_Primitive{ GL_LINE_STRIP };
 				public:
 								BufferData() {}
+								~BufferData();
 
 								void Resize();
+								inline GLenum GetPrimitive() { return m_Primitive; }
+								inline void SetPrimitive(GLenum p_primitive) { m_Primitive = p_primitive; }
 
 								template <typename T, typename... Args>
 								std::shared_ptr<BufferLayoutElement<T>> ConstructBufferElement(const std::string& p_name, Args&&... args) {
@@ -75,8 +80,9 @@ namespace GL_Graphics {
 												return new_element;
 								}
 
-								std::shared_ptr<BufferLayoutElement<idx_type>> ConstructIndexBuffer(const std::string& p_name, std::vector<idx_type> p_data) {
-												m_IdxBuffer = std::make_shared<BufferLayoutElement<idx_type>>(p_name, p_data);
+
+								std::shared_ptr<BufferLayoutElement<index_type>> ConstructIndexBuffer(std::vector<index_type> p_data) {
+												m_IdxBuffer = std::make_shared<BufferLayoutElement<index_type>>("idx", p_data);
 												return m_IdxBuffer;
 								}
 
@@ -84,7 +90,7 @@ namespace GL_Graphics {
 								template <typename T>
 								std::shared_ptr<BufferLayoutElement<T>> GetBufferElement(const std::string& p_name) {
 												for (auto& element : m_Data) {
-																if (auto converted = std::dynamic_pointer_cast<BufferLayoutElement<T>>(element)) {
+																if (std::shared_ptr<BufferLayoutElement<T>> converted = std::dynamic_pointer_cast<BufferLayoutElement<T>>(element)) {
 																				if (converted->GetName() == p_name) {
 																								return converted;
 																				}
@@ -93,7 +99,7 @@ namespace GL_Graphics {
 												return nullptr;
 								}
 
-								inline std::shared_ptr<BufferLayoutElement<idx_type>> GetIndexBuffer() {
+								inline std::shared_ptr<BufferLayoutElement<index_type>> GetIndexBuffer() {
 												return m_IdxBuffer;
 								}
 				};
@@ -119,5 +125,5 @@ namespace GL_Graphics {
 				};
 
 }
-#include "Buffer/Buffer.inl"
+#include "Buffer.inl"
 #endif //BUFFER_H
