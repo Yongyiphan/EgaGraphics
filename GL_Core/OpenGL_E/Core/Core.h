@@ -5,17 +5,19 @@
 #include "GLFW_Window.h"
 #include "Input.h"
 #include "Shader/Shader.h"
-
+#include "../Graphics.h"
+#include "Core/ECS.h"
 
 
 namespace Core {
 
 
 
-				struct GL_Core {
+				class GL_Core {
+								glm::vec3 m_BGColor{};
+				public:
 								std::shared_ptr<GLWindow> AppWindow;
 								std::shared_ptr<Input> AppInput;
-								std::shared_ptr<GL_Graphics::ShaderManager> GLShader;
 
 								GL_Core();
 								~GL_Core();
@@ -23,6 +25,8 @@ namespace Core {
 								bool Run();
 								void Next();
 								void SetupShaders();
+								void SetupModels();
+								void SetBackgroundColor(float r, float g, float b);
 				};
 
 

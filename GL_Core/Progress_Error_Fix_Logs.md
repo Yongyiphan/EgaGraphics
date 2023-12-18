@@ -38,6 +38,8 @@ std::function<void(Args...)>
 #### Model 
 * Generic Base models [-1.0f,1.0f] e.g Point, Line, Quad, Circle
 
+# Progress Log:
+[18/12/23]: Able to render basic shapes;
 
 # Difficulties
 ### Feature: Buffer Layout Element Specialization for Different Types

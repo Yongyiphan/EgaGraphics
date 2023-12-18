@@ -51,7 +51,7 @@ namespace GL_Graphics {
 				class ShaderGroup {
 				public:
 								ShaderGroup() {}
-								ShaderGroup(const std::string& p_GroupName, std::vector<ShaderType>);
+								ShaderGroup(const std::string& p_GroupName, std::vector<ShaderType> = { ShaderType::VERT_SHADER, ShaderType::FRAG_SHADER });
 								bool IsCorrupted{};
 								bool Created{};
 
@@ -60,23 +60,24 @@ namespace GL_Graphics {
 								inline void SetShaderID(ShaderID p_ID) { m_ID = p_ID; }
 								inline ShaderID GetShaderID() { return m_ID; }
 				private:
-								ShaderID m_ID;
-								std::string m_name;
+								ShaderID m_ID{ 0 };
+								std::string m_name{};
 								std::vector<ShaderFile> ShaderGrp{};
 								std::vector<bool> GroupStatus;
 
 				};
 
 
-				class ShaderManager {
+				class ShaderManager : public ISingleton<ShaderManager> {
 				public:
 								ShaderManager() {}
 								~ShaderManager() {}
 
 								void AddShaderGroup(ShaderGroup);
 								void RemoveShaderGroup(const std::string& ShaderGrp);
-								void Use(ShaderID);
+								void Use(const std::string& grp_name);
 								void UnUse();
+								ShaderID GetShader(const std::string& grp_name);
 
 
 								void SetUniformMat3(const std::string&, glm::mat3);
@@ -93,11 +94,9 @@ namespace GL_Graphics {
 								bool Shader_Validate(ShaderID);
 								void HandleError(ShaderID, std::string msg, bool checkShader = false);
 								int GetUniformVar(const std::string&);
-								ShaderID GetShader(const std::string& grp_name);
 								std::map<std::string, ShaderGroup> Shader_Cache;
 								ShaderID CurrentShaderID{ 0 };
 								std::string currShadergrp{ "" };
-
 				};
 
 

@@ -154,4 +154,11 @@ namespace GL_Graphics {
 								BD.ConstructIndexBuffer(idx_vtx);
 								return BD;
 				}
+
+
+				BufferData CreateTextModel(ECS::TransformComponent* transc_ptr, ECS::TextComponent* textc_ptr) {
+
+								BufferData BD;
+								return BD;
+				}
 }

@@ -110,6 +110,7 @@ namespace Core {
 				void GLWindow::SetDimensions(int w, int h) {
 								Dimension.x = static_cast<float>(w);
 								Dimension.y = static_cast<float>(h);
+								glViewport(0, 0, w, h);
 				}
 
 				void GLWindow::CleanUp() {

@@ -25,7 +25,7 @@ namespace Core {
 								INVALID_FILE,
 				};
 
-				void SetDriver(Core::Driver = Core::Driver::OpenGL);
+				void SetDriver(Core::Driver);
 
 				void Globals_Init();
 

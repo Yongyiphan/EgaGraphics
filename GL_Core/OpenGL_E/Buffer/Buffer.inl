@@ -7,16 +7,6 @@ namespace GL_Graphics {
 								GetSpecs();
 				}
 
-				//				template<typename T>
-				//				inline BufferLayoutElement<T>::BufferLayoutElement(const std::string& p_name, bool p_IsInstanced,
-				//								size_t p_reserve) {
-				//								m_Name = p_name;
-				//								m_IsInstanced = p_IsInstanced;
-				//								if (p_reserve > 0) {
-				//												m_Data.reserve(p_reserve);
-				//								}
-				//								GetSpecs();
-				//				}
 
 				template<typename T>
 				inline BufferLayoutElement<T>::BufferLayoutElement(
@@ -32,6 +22,11 @@ namespace GL_Graphics {
 								}
 								m_IsInstanced = p_IsInstanced;
 								GetSpecs();
+				}
+
+				template<typename T>
+				void BufferLayoutElement<T>::Clear() {
+								m_Data.clear();
 				}
 
 				template<typename T>
@@ -64,6 +59,8 @@ namespace GL_Graphics {
 								m_DataSize = sizeof(glm::mat3);
 								m_SubElementCount = 3;
 								m_Dimensions = 3;
+								m_IsMatrix_Type = true;
+								m_SubSubDataSize = sizeof(glm::vec3);
 				}
 
 				template<>
@@ -71,13 +68,15 @@ namespace GL_Graphics {
 								m_DataSize = sizeof(glm::mat4);
 								m_SubElementCount = 4;
 								m_Dimensions = 4;
+								m_IsMatrix_Type = true;
+								m_SubSubDataSize = sizeof(glm::vec4);
 				}
 
 				template<>
 				inline void BufferLayoutElement<int>::GetSpecs() {
 								m_DataSize = sizeof(int);
 								m_SubElementCount = 1;
-								GL_Type = GL_INT;
+								m_GL_Type = GL_INT;
 				}
 
 				template<>
@@ -90,6 +89,6 @@ namespace GL_Graphics {
 				inline void BufferLayoutElement<index_type>::GetSpecs() {
 								m_DataSize = sizeof(index_type);
 								m_SubElementCount = 0;
-								GL_Type = GL_UNSIGNED_SHORT;
+								m_GL_Type = GL_UNSIGNED_SHORT;
 				}
 };

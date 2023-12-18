@@ -165,19 +165,22 @@ namespace GL_Graphics {
 				}
 
 
-				void ShaderManager::Use(ShaderID p_id) {
-								if (p_id != CurrentShaderID) {
-												bool info = false;
-												if (info) {
-																std::stringstream ss;
-																ss << "Shader changed from: ";
-																ss << CurrentShaderID;
-																ss << " to: " << p_id;
-																E_LOG("INFO", ss.str());
+				void ShaderManager::Use(const std::string& grp_name) {
+								ShaderID p_id = GetShader(grp_name);
+								if (p_id) {
+												if (p_id != CurrentShaderID) {
+																bool info = false;
+																if (info) {
+																				std::stringstream ss;
+																				ss << "Shader changed from: ";
+																				ss << CurrentShaderID;
+																				ss << " to: " << p_id;
+																				E_LOG("INFO", ss.str());
+																}
+																CurrentShaderID = p_id;
 												}
-												CurrentShaderID = p_id;
+												GLCall(glUseProgram(CurrentShaderID));
 								}
-								glUseProgram(CurrentShaderID);
 				}
 
 				void ShaderManager::UnUse() {

@@ -5,6 +5,9 @@ cppdialect("C++20")
 -- targetdir("Binaries/%{cfg.buildcfg}")
 staticruntime("off")
 
+filter "action:vs*"
+removefiles { "*.filters" }
+
 local FilesDir = "OpenGL_E"
 
 pchheader "epch.h"
@@ -28,6 +31,7 @@ includedirs {
 	IncludeDir.glfw,
 	IncludeDir.glew,
 	IncludeDir.glm,
+	IncludeDir.imgui
 }
 
 
@@ -61,6 +65,7 @@ defines { "RELEASE" }
 runtime("Release")
 optimize("On")
 symbols("On")
+
 
 -- filter("configurations:Dist")
 -- defines { "DIST" }

@@ -13,6 +13,7 @@
 #include <sstream>
 #include <filesystem>
 #include <algorithm>
+#include <limits>
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -23,5 +24,6 @@
 //#include "Core/Core.h"
 #include "Core/Event.h"
 #include "Core/Globals.h"
+#include "Core/ECS.h"
 
 #endif //EPCH.H

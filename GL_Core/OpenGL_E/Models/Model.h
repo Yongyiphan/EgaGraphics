@@ -2,7 +2,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 #include "Buffer/Buffer.h"
-
+#include "Core/ECS.h"
 
 namespace GL_Graphics {
 
@@ -11,6 +11,7 @@ namespace GL_Graphics {
 				BufferData CreateLineModel();
 				BufferData CreateQuadModel(bool hollow = false);
 				BufferData CreateCircleModel(size_t points, bool hollow = false);
+				BufferData CreateTextModel(ECS::TransformComponent* transformc_ptr, ECS::TextComponent* textc_ptr);
 }
 
 #endif //MODEL_H
