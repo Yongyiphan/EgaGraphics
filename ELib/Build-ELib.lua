@@ -1,4 +1,4 @@
-project("GL_Core")
+project("ELib")
 kind("StaticLib")
 language("C++")
 cppdialect("C++20")
@@ -11,23 +11,29 @@ removefiles { "*.filters" }
 local FilesDir = "OpenGL_E"
 
 pchheader "epch.h"
-pchsource(FilesDir .. "/epch.cpp")
+pchsource("Core/epch.cpp")
 
 
 files {
+	"Core/**.h",
+	"Core/**.hpp",
+	"Core/**.inl",
+	"Core/**.cpp",
 	FilesDir .. "/**.h",
 	FilesDir .. "/**.cpp",
 	FilesDir .. "/**.inl",
 	FilesDir .. "/**.hpp",
 }
 
-IncludeDir.GL_Core     = "%{wks.location}/GL_Core"
+IncludeDir.Core        = "%{wks.location}/ELib/Core"
+IncludeDir.GL_Core     = "%{wks.location}/ELib/" .. FilesDir
 AssetsDir.GL_Core      = {}
-AssetsDir.GL_Core.dir  = "%{wks.location}/GL_Core/GL_Assets"
+AssetsDir.GL_Core.dir  = "%{wks.location}/ELib/GL_Assets"
 AssetsDir.GL_Core.name = "GL_Assets"
 
 includedirs {
 	FilesDir,
+	IncludeDir.Core,
 	IncludeDir.glfw,
 	IncludeDir.glew,
 	IncludeDir.glm,
@@ -40,7 +46,7 @@ defines {
 	"GLFW_DLL",
 	"CRT_SECURE_NO_WARNINGS",
 	"_UNICODE", "UNICODE",
-	"OPENGL_E"
+	"ELIB_OPENGL",
 }
 
 

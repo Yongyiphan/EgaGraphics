@@ -13,8 +13,8 @@ includedirs({
 
 
 externalincludedirs {
+	IncludeDir.Core,
 	IncludeDir.GL_Core,
-	IncludeDir.GL_Core .. "/OpenGL_E",
 	IncludeDir.glfw,
 	IncludeDir.glew,
 	IncludeDir.glm,
@@ -27,18 +27,19 @@ libdirs
 }
 
 links {
-	"GL_Core",
+	"ELib",
 	"opengl32",
 	"glew32",
 	"glfw3dll",
 }
 
-dependson { "GL_Core" }
+dependson { "ELib" }
 
 
 
 defines {
-	"_CONSOLE"
+	"_CONSOLE",
+	"ELIB_OPENGL",
 }
 
 targetdir("../Binaries/" .. OutputDir .. "/%{prj.name}")

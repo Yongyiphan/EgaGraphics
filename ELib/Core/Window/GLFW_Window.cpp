@@ -1,7 +1,7 @@
 #include <epch.h>
 #include "Core.h"
 #include "GLFW_Window.h"
-#include "Event.h"
+#include "Event/Event.h"
 
 namespace Core {
 

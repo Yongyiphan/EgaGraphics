@@ -2,11 +2,11 @@
 #ifndef CORE_H
 #define CORE_H
 #include "Defines.h"
-#include "GLFW_Window.h"
-#include "Input.h"
+#include "Window/GLFW_Window.h"
+#include "Input/Input.h"
 #include "Shader/Shader.h"
-#include "../Graphics.h"
-#include "Core/ECS.h"
+#include "Graphics.h"
+#include "ECS/ECS.h"
 
 
 namespace Core {

@@ -15,15 +15,18 @@
 #include <algorithm>
 #include <limits>
 
+#ifdef ELIB_OPENGL
 #include <GL/glew.h>
+#endif
+
 #include <glm/glm.hpp>
 
 #define E_API __declspec(dllimport) 
 #define unref(x) (void)x
 #include "Defines.h"
 //#include "Core/Core.h"
-#include "Core/Event.h"
-#include "Core/Globals.h"
-#include "Core/ECS.h"
+#include "Event/Event.h"
+#include "Globals.h"
+#include "ECS/ECS.h"
 
 #endif //EPCH.H

@@ -30,8 +30,7 @@ PostLibDir["glew"]  = "%{wks.location}Vendor/Dependencies/glew-2.2.0/bin/Release
 OutputDir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
 
 group "GLib"
-include("GL_Core/Build-GL_Core.lua")
--- include("Vulkan_Core/Build-Vulkan_Core.lua")
+include("ELib/Build-ELib.lua")
 group ""
 
 include "Editor/Build-Editor.lua"

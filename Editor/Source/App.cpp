@@ -1,10 +1,9 @@
-#define OpenGL_E 
-//#define Vulkan_E
 
-#ifdef OpenGL_E
-#include <OpenGL_E/Core/Core.h>
+#ifdef ELIB_OPENGL 
+#include <Core.h>
+using namespace GL_Graphics;
 #endif
-#ifdef Vulkan_E
+#ifdef ELIB_VULKAN 
 #include <Vulkan_E/Core/Core.h>
 #endif
 
@@ -17,7 +16,6 @@ int main()
 				App->Init(Window_Width, Window_Height);
 				App->SetBackgroundColor(0.5f, 0.1f, 0.5f);
 
-				using namespace GL_Graphics;
 				GraphicsManager& GMan = GraphicsManager::GetInstance();
 
 				while (App->Run()) {

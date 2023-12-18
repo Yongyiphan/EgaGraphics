@@ -1,5 +1,5 @@
 #pragma once
-#include "GLFW_Window.h"
+#include "Window/GLFW_Window.h"
 #include <optional>
 
 #define MOUSE_LEFT GLFW_MOUSE_BUTTON_1
@@ -36,13 +36,13 @@ namespace Core {
 
 
 				private:
-								
+
 								KeyInfo* findKey(int key);
 
 								std::map<int, KeyInfo> m_KeyList;
 								double mouse_scroll_x{}, mouse_scroll_y{};
 								double mouse_pos_x{}, mouse_pos_y{};
-								
+
 				};
 
 }
