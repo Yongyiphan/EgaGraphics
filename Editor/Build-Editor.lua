@@ -2,8 +2,10 @@ project("Editor")
 kind("ConsoleApp")
 language("C++")
 cppdialect("C++20")
--- targetdir("Binaries/%{cfg.buildcfg}")
 staticruntime("off")
+
+targetdir(ProjectTargetDir .. "/%{prj.name}")
+objdir(ProjectObjDir .. "/%{prj.name}")
 
 files({ "Source/**.h", "Source/**.cpp" })
 
@@ -18,6 +20,7 @@ externalincludedirs {
 	IncludeDir.glfw,
 	IncludeDir.glew,
 	IncludeDir.glm,
+	IncludeDir.imgui,
 }
 
 libdirs
@@ -28,32 +31,38 @@ libdirs
 
 links {
 	"ELib",
+	"ImGui",
 	"opengl32",
 	"glew32",
 	"glfw3dll",
 }
 
-dependson { "ELib" }
+dependson { "ELib", "ImGui" }
 
 
 
 defines {
 	"_CONSOLE",
-	"ELIB_OPENGL",
 }
 
-targetdir("../Binaries/" .. OutputDir .. "/%{prj.name}")
-objdir("../Binaries/obj/" .. OutputDir .. "/%{prj.name}")
-debugdir("../Binaries/" .. OutputDir .. "/%{prj.name}")
 
-local TargetDir = " %{cfg.targetdir}/"
+local function CreatePostBuildCommand(CMD, p_SrcDir, p_Filename, p_isDir)
+	local m_TargetDir = " %{cfg.targetdir}/"
+	if p_isDir == true then
+		return CMD .. " " .. p_SrcDir .. m_TargetDir .. p_Filename
+	else
+		return CMD .. " " .. p_SrcDir .. "/" .. p_Filename .. m_TargetDir .. p_Filename
+	end
+end
 
 postbuildcommands {
-	"{COPYDIR}  " .. AssetsDir.GL_Core.dir .. " " .. TargetDir .. AssetsDir.GL_Core.name,
-	"{COPYFILE} " .. PostLibDir.glew .. "/glew32.dll " .. TargetDir .. "glew32.dll",
-	"{COPYFILE} " .. PostLibDir.glfw .. "/glfw3.dll " .. TargetDir .. "glfw3.dll",
+	CreatePostBuildCommand("{COPYDIR}", AssetsDir.GL_Core.dir, AssetsDir.GL_Core.name, true),
+	CreatePostBuildCommand("{COPYFILE}", PostLibDir.glew, "glew32.dll", false),
+	CreatePostBuildCommand("{COPYFILE}", PostLibDir.glfw, "glfw3.dll", false),
 }
 
+linkoptions { '/NODEFAULTLIB:LIBCMTD' }
+-- linkoptions { "/VERBOSE:LIB" }
 
 filter("system:windows")
 systemversion("latest")

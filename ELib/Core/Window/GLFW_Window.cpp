@@ -45,12 +45,13 @@ namespace Core {
 												return;
 								}
 								// Set Callbacks
-								glfwSetWindowSizeCallback(m_pWindow, [](GLFWwindow* window, int width, int height) {
+								glfwSetWindowSizeCallback(m_pWindow, [](GLFWwindow*, int width, int height) {
 												EventDispatcher::GetInstance().DispatchEvent(GL_CORE_EVENT_WINDOW_RESIZE, width, height);
 												});
 
 								glfwSetKeyCallback(m_pWindow, [](GLFWwindow*, int key, int scancode, int action, int mods) {
 												EventDispatcher::GetInstance().DispatchEvent(GL_CORE_EVENT_KEYPRESS, key, scancode, action, mods);
+												EventDispatcher::GetInstance().DispatchEvent(GL_CORE_EVENT_KEYPRESS, key);
 												});
 
 								glfwSetMouseButtonCallback(m_pWindow, [](GLFWwindow*, int button, int action, int mod) {

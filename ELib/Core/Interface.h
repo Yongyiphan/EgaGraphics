@@ -20,3 +20,11 @@ T& ISingleton<T>::GetInstance() {
 				static T instance{};
 				return instance;
 }
+
+class IBaseObject {
+private:
+				std::string m_Name{};
+public:
+				inline void SetName(const std::string& p_name) { m_Name = p_name; }
+				inline std::string GetName() { return m_Name; }
+};

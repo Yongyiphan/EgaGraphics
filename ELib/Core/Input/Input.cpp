@@ -71,6 +71,7 @@ namespace Core {
 								}
 								return correct;
 				}
+
 				bool Input::IsKeyHold(int key) {
 								KeyInfo* fkey = findKey(key);
 								bool _true = (fkey && (fkey->c_action == GLFW_REPEAT || fkey->c_action == GLFW_PRESS)) ? true : false;

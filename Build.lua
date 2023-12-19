@@ -26,11 +26,19 @@ PostLibDir          = {}
 PostLibDir["glfw"]  = "%{wks.location}Vendor/Dependencies/glfw-3.3.8.bin.WIN64/lib-vc2022"
 PostLibDir["glew"]  = "%{wks.location}Vendor/Dependencies/glew-2.2.0/bin/Release/x64"
 
+defines {
+	"ELIB_OPENGL"
+}
 
-OutputDir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
+ProjectTargetDir = "%{wks.location}/Binaries/%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}/"
+ProjectObjDir = "%{wks.location}/Binaries/obj/%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}/"
 
 group "GLib"
+include("ImGui/Build-ImGui.lua")
 include("ELib/Build-ELib.lua")
 group ""
+
+dependson { "ImGui" }
+-- ignoredefaultlibraries { "LIBCMTD" }
 
 include "Editor/Build-Editor.lua"

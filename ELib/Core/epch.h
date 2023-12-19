@@ -24,7 +24,7 @@
 #define E_API __declspec(dllimport) 
 #define unref(x) (void)x
 #include "Defines.h"
-//#include "Core/Core.h"
+//#include "Core.h"
 #include "Event/Event.h"
 #include "Globals.h"
 #include "ECS/ECS.h"

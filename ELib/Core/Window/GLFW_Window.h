@@ -20,6 +20,9 @@ namespace Core {
 								};
 
 								GLWindow();
+								// Ensures only 1 instance within entire programme
+								GLWindow(const GLWindow&) = delete;
+								GLWindow& operator=(const GLWindow&) = delete;
 								~GLWindow() {};
 								void Init(int width, int height);
 								void CleanUp();

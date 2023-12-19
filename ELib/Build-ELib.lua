@@ -2,11 +2,15 @@ project("ELib")
 kind("StaticLib")
 language("C++")
 cppdialect("C++20")
--- targetdir("Binaries/%{cfg.buildcfg}")
 staticruntime("off")
+
+targetdir(ProjectTargetDir .. "/%{prj.name}")
+objdir(ProjectObjDir .. "/%{prj.name}")
 
 filter "action:vs*"
 removefiles { "*.filters" }
+
+warnings "Extra"
 
 local FilesDir = "OpenGL_E"
 
@@ -25,8 +29,11 @@ files {
 	FilesDir .. "/**.hpp",
 }
 
+
+
 IncludeDir.Core        = "%{wks.location}/ELib/Core"
 IncludeDir.GL_Core     = "%{wks.location}/ELib/" .. FilesDir
+
 AssetsDir.GL_Core      = {}
 AssetsDir.GL_Core.dir  = "%{wks.location}/ELib/GL_Assets"
 AssetsDir.GL_Core.name = "GL_Assets"
@@ -41,20 +48,12 @@ includedirs {
 }
 
 
-
 defines {
 	"GLFW_DLL",
 	"CRT_SECURE_NO_WARNINGS",
 	"_UNICODE", "UNICODE",
-	"ELIB_OPENGL",
 }
 
-
-
-
-
-targetdir("../Binaries/" .. OutputDir .. "/%{prj.name}")
-objdir("../Binaries/obj/" .. OutputDir .. "/%{prj.name}")
 
 filter("system:windows")
 systemversion("latest")
@@ -71,6 +70,7 @@ defines { "RELEASE" }
 runtime("Release")
 optimize("On")
 symbols("On")
+
 
 
 -- filter("configurations:Dist")

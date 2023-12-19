@@ -10,15 +10,21 @@ using namespace GL_Graphics;
 int main()
 {
 				Core::SetDriver(Core::Driver::OpenGL);
-				Core::GL_Core* App = new Core::GL_Core();
+				std::unique_ptr<Core::GL_Core> App = std::make_unique<Core::GL_Core>();
 				int Window_Width = 1280;
 				int Window_Height = 720;
 				App->Init(Window_Width, Window_Height);
 				App->SetBackgroundColor(0.5f, 0.1f, 0.5f);
+				App->AppCamera->AddCamera(new Core::Camera(
+								"Engine", {},
+								static_cast<float>(Window_Width),
+								static_cast<float>(Window_Height)
+				));
 
 				GraphicsManager& GMan = GraphicsManager::GetInstance();
 
 				while (App->Run()) {
+								App->AppCamera->Update(App->GetDeltaTime());
 
 								auto transformc = ECS::TransformComponent();
 								transformc.SetPosition({ 0.f, 0.f, 1.f });
@@ -46,7 +52,5 @@ int main()
 								// Require to prep for next cycle
 								App->Next();
 				}
-
-				delete App;
 
 }

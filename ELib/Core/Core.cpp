@@ -1,6 +1,7 @@
 #include <epch.h>
 #include "Core.h"
 #include "Models/Model.h"
+#include <chrono>
 
 namespace Core {
 
@@ -12,8 +13,9 @@ namespace Core {
 				GL_Core::GL_Core() {
 								AppWindow = std::make_shared<Core::GLWindow>();
 								AppInput = std::make_shared<Core::Input>();
-								//GLShader = std::make_shared<GL_Graphics::ShaderManager>();
-								std::filesystem::path __ = std::filesystem::current_path();
+								AppCamera = std::make_shared<Core::CameraManager>();
+								m_ImGui = std::make_shared<Core::EImGui>();
+
 				}
 
 				void GL_Core::Init(int width, int height) {
@@ -21,18 +23,21 @@ namespace Core {
 								Globals_Init();
 								SetupShaders();
 								SetupModels();
-
-
+								m_ImGui->Init(AppWindow->GetWindow());
 
 				}
 
 				GL_Core::~GL_Core() {
+								m_ImGui->CleanUp();
 								AppWindow->CleanUp();
 
 				}
 
 				bool GL_Core::Run() {
+								AppWindow->pollEvents();
 								bool close = !AppWindow->ShouldClose();
+								StartFrame();
+								m_ImGui->StartFrame();
 								glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 								glClearColor(m_BGColor.r, m_BGColor.g, m_BGColor.b, 1.f);
 								// Very Defaulted base key inputs. redundant in main loop
@@ -43,8 +48,21 @@ namespace Core {
 				}
 
 				void GL_Core::Next() {
+								m_ImGui->EndFrame();
 								AppWindow->swapBuffers();
-								AppWindow->pollEvents();
+								EndFrame();
+				}
+
+				void GL_Core::StartFrame() {
+								static std::chrono::steady_clock::time_point currentTime, lastTime;
+								m_Deltatime = 0.0;
+								lastTime = currentTime;
+								currentTime = std::chrono::steady_clock::now();
+								std::chrono::duration<double> delta = currentTime - lastTime;
+								m_Deltatime = delta.count();
+				}
+
+				void GL_Core::EndFrame() {
 				}
 
 				void GL_Core::SetupShaders() {
@@ -79,5 +97,6 @@ namespace Core {
 								m_BGColor.b = p_b;
 
 				}
+
 
 }

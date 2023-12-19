@@ -38,6 +38,12 @@
         std::cout << logStream.str() << "\n"; \
     } while (0)
 
+#define E_LOG_INFO(msg) E_LOG("INFO", msg)
+#define E_LOG_WARN(msg) E_LOG("WARN", msg)
+#define E_LOG_ERROR(msg) E_LOG("ERROR", msg)
+#define E_LOG_FATAL(msg) E_LOG("FATAL", msg)
+#define E_LOG_DEBUG(msg) E_LOG("DEBUG", msg)
+
 #define ASSERT_MSG(msg)\
 do{\
 				E_LOG("FATAL", msg);\
@@ -45,3 +51,33 @@ do{\
 } while (0)
 
 
+////////////////////////////////////////////////////////////
+///                                                      ///
+///																				CONTROLS PLAN				   														///
+///                                                      ///
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+///																				  CAMERA                          ///
+////////////////////////////////////////////////////////////
+#include "Window/GLFW_Window.h"
+enum class CAMERA_CONTROL {
+				NONE = 0,
+				ROLL = 1 << 0,
+				YAW = 1 << 1,
+				PITCH = 1 << 2,
+				ZOOM = 1 << 3,
+				FORWARD = 1 << 4,
+				BACKWARD = 1 << 5,
+				TOGGLE_VIEW = 1 << 6,
+				RESET_VIEW = 1 << 7,
+				LEFT = 1 << 8,
+				RIGHT = 1 << 9,
+};
+
+
+////////////////////////////////////////////////////////////
+///																				   INPUT                          ///
+////////////////////////////////////////////////////////////
+#define MOUSE_LEFT GLFW_MOUSE_BUTTON_1
+#define MOUSE_RIGHT GLFW_MOUSE_BUTTON_2
+#define MOUSE_MIDDLE GLFW_MOUSE_BUTTON_3
