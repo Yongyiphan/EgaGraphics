@@ -25,6 +25,9 @@ class IBaseObject {
 private:
 				std::string m_Name{};
 public:
+				IBaseObject() : m_Name() {}
+				IBaseObject(const std::string& p_Name) : m_Name(p_Name) {}
 				inline void SetName(const std::string& p_name) { m_Name = p_name; }
 				inline std::string GetName() { return m_Name; }
+				virtual ~IBaseObject() {}
 };

@@ -60,18 +60,25 @@ do{\
 ///																				  CAMERA                          ///
 ////////////////////////////////////////////////////////////
 #include "Window/GLFW_Window.h"
-enum class CAMERA_CONTROL {
+enum class Camera_Key_Actions {
 				NONE = 0,
-				ROLL = 1 << 0,
-				YAW = 1 << 1,
-				PITCH = 1 << 2,
-				ZOOM = 1 << 3,
-				FORWARD = 1 << 4,
-				BACKWARD = 1 << 5,
-				TOGGLE_VIEW = 1 << 6,
-				RESET_VIEW = 1 << 7,
-				LEFT = 1 << 8,
-				RIGHT = 1 << 9,
+				ROLL,
+				YAW,
+				PITCH,
+				ZOOM,
+				VIEW,
+				TOGGLE,
+				MAX_CAM_FLAG = 8,
+};
+
+enum class Base_Key_Actions {
+				NONE = 0,
+				FORWARD,
+				BACKWARD,
+				LEFT,
+				RIGHT,
+				RESET,
+				MAX_FLAG = 8,
 };
 
 

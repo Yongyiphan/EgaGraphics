@@ -65,10 +65,12 @@ namespace GL_Graphics {
 
 				}
 
-				void ShaderManager::RemoveShaderGroup(const std::string& ShaderGrp) {}
+				void ShaderManager::RemoveShaderGroup(const std::string& ShaderGrp) {
+								Shader_Cache.erase(ShaderGrp);
+				}
 
 				bool ShaderManager::Shader_Create(ShaderGroup& p_sgroup) {
-								bool success{ false };
+								bool success{ true };
 								p_sgroup.SetShaderID(glCreateProgram());
 								currShadergrp = p_sgroup.GetName();
 								for (auto sfile : p_sgroup.GetShaderGroup()) {
@@ -76,19 +78,19 @@ namespace GL_Graphics {
 												std::ifstream inFile{ sfile.m_filepath.string(), std::ifstream::in };
 												if (inFile.fail()) {
 																E_LOG("ERROR", "Unable to read file");
-																return false;
+																return success = false;;
 												}
 												std::stringstream buffer;
 												buffer << inFile.rdbuf();
 												inFile.close();
 												sourcefile = buffer.str();
 												if (!Shader_Compile(p_sgroup.GetShaderID(), sfile.m_ShaderType, sourcefile)) {
-																return false;
+																return success;
 												}
 								}
 								E_LOG("INFO", currShadergrp + " shader group created");
 
-								return true;
+								return success;
 				}
 				bool ShaderManager::Shader_Compile(ShaderID p_pgrm, ShaderInfo p_info, const std::string& p_source) {
 								ShaderID nid = glCreateShader(p_info.m_gltype);

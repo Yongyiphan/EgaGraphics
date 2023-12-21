@@ -13,43 +13,76 @@ int main()
 				std::unique_ptr<Core::GL_Core> App = std::make_unique<Core::GL_Core>();
 				int Window_Width = 1280;
 				int Window_Height = 720;
+				float FWidth = static_cast<float>(Window_Width);
+				float FHeight = static_cast<float>(Window_Height);
 				App->Init(Window_Width, Window_Height);
 				App->SetBackgroundColor(0.5f, 0.1f, 0.5f);
 				App->AppCamera->AddCamera(new Core::Camera(
 								"Engine", {},
-								static_cast<float>(Window_Width),
-								static_cast<float>(Window_Height)
+								FWidth, FHeight
 				));
 
 				GraphicsManager& GMan = GraphicsManager::GetInstance();
+				FrameBufferSettings MainBufferSettings("MainBuffer", FWidth, FHeight);
+				MainBufferSettings.m_Attachment = {
+								Attachment(GL_RGBA32F, GL_RGBA, GL_COLOR_ATTACHMENT0),
+								Attachment(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL, GL_DEPTH_STENCIL_ATTACHMENT)
+				};
+				FrameBuffer MainBuffer(MainBufferSettings);
+
+				glm::mat4 proj_view(1.f);
+
+				auto transformc = ECS::TransformComponent();
+				auto spritec = ECS::SpriteComponent();
+				auto meshc = ECS::MeshComponent("FilledCircle");
+				auto textc = ECS::TextComponent();
+
+				transformc.SetPosition({ 0.f, 0.f, 1.f });
+				transformc.SetScale({ 30.f, 30.f, 0.f });
+
 
 				while (App->Run()) {
+								auto window_size = App->AppWindow->GetDimensions();
+								//#define USE_IMGUI_FRAMEBUFFER_IMAGE
+#ifdef USE_IMGUI_FRAMEBUFFER_IMAGE
+								MainBuffer.Resize(window_size.x, window_size.y);
+								FrameBuffer::Bind(MainBuffer.GetFrameBufferID());
+#endif
+								RenderSystem::ClearColor(App->GetBackgroundColor());
+
 								App->AppCamera->Update(App->GetDeltaTime());
+								proj_view[0].x = 2.f / window_size.x;
+								proj_view[1].y = 2.f / window_size.y;
+								//proj_view = App->AppCamera->GetCurrentCamera()->GetProjectionViewMatrix();
 
-								auto transformc = ECS::TransformComponent();
-								transformc.SetPosition({ 0.f, 0.f, 1.f });
-								transformc.SetScale({ 100.f, 200.f, 0.f });
+								{
 
-								auto spritec = ECS::SpriteComponent();
-								auto meshc = ECS::MeshComponent("FilledCircle");
-								auto textc = ECS::TextComponent();
+												GLenum forwardkey = GLFW_KEY_A;
+												if (App->AppInput->IsKeyPress(forwardkey) || App->AppInput->IsKeyHold(forwardkey)) {
+																transformc.SetPosition(transformc.GetPosition() + glm::vec3{ -10.f, 0.f, 0.f });
+												}
+												if (App->AppInput->IsKeyPress(GLFW_KEY_D) || App->AppInput->IsKeyHold(GLFW_KEY_D)) {
+																transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 10.f, 0.f, 0.f });
+												}
+
+												if (App->AppInput->IsKeyPress(GLFW_KEY_W) || App->AppInput->IsKeyHold(GLFW_KEY_W)) {
+																transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 0.f, 10.f, 0.f });
+												}
+												if (App->AppInput->IsKeyPress(GLFW_KEY_S) || App->AppInput->IsKeyHold(GLFW_KEY_S)) {
+																transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 0.f, -10.f, 0.f });
+												}
+
+								}
 
 								RenderSystem::BatchStart();
-								RenderSystem::Render(*GMan.GetModel(meshc.GetMeshName()).get(), &transformc);
-								//RenderSystem::Render(*GMan.GetModel(meshc.GetMeshName()).get(), &transformc);
-								// App->AppRender(transformc, spritec, meshc);
-								// App->AppRender(transformc, textc);
-
-								////////////
-
-								// App->AppRender->BatchStart();
-								// App->AppRender->Submit();
-								// App->AppRender->BatchEnd();
-
-
-
+								RenderSystem::Render(*GMan.GetModel(meshc.GetMeshName()).get(), &transformc, proj_view);
+								RenderSystem::BatchEnd();
 
 								// Require to prep for next cycle
+#ifdef USE_IMGUI_FRAMEBUFFER_IMAGE
+								//FrameBuffer::UnBind();
+								//App->EImGui->RenderFramebuffer(MainBuffer, glm::vec2{ Window_Width, Window_Height });
+#endif
 								App->Next();
 				}
 

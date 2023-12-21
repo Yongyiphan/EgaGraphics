@@ -1,10 +1,12 @@
 #pragma once
 #include <imgui.h>
+#include <GLFW/glfw3.h>
 #include <backends/imgui_impl_glfw.h>
+#include "ImGuiHelper.h"
+#include <Graphics.h>
 #ifdef ELIB_OPENGL 
 #include <backends/imgui_impl_opengl3.h>
 #endif // ELIB_OPENGL
-#include <GLFW/glfw3.h>
 
 
 namespace Core {
@@ -16,6 +18,8 @@ namespace Core {
 								void StartFrame();
 								void EndFrame();
 								void CleanUp();
-								void RenderFramebuffer(ImTextureID) {}
+				public:
+								void RenderStatsTracker();
+								void RenderFramebuffer(GL_Graphics::FrameBuffer, glm::vec2 target_size);
 				};
 }

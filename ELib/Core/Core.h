@@ -18,11 +18,11 @@ namespace Core {
 				class GL_Core {
 								glm::vec3 m_BGColor{};
 								double m_Deltatime{};
-								std::shared_ptr<EImGui> m_ImGui;
 				public:
 								std::shared_ptr<GLWindow> AppWindow;
 								std::shared_ptr<Input> AppInput;
 								std::shared_ptr<CameraManager> AppCamera;
+								std::shared_ptr<EImGui> EImGui;
 
 								GL_Core();
 								~GL_Core();
@@ -32,6 +32,7 @@ namespace Core {
 								void SetupShaders();
 								void SetupModels();
 								void SetBackgroundColor(float r, float g, float b);
+								glm::vec3 GetBackgroundColor();
 								void StartFrame();
 								void EndFrame();
 								inline double GetDeltaTime() { return m_Deltatime; }

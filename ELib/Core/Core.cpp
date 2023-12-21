@@ -14,7 +14,7 @@ namespace Core {
 								AppWindow = std::make_shared<Core::GLWindow>();
 								AppInput = std::make_shared<Core::Input>();
 								AppCamera = std::make_shared<Core::CameraManager>();
-								m_ImGui = std::make_shared<Core::EImGui>();
+								EImGui = std::make_shared<Core::EImGui>();
 
 				}
 
@@ -23,12 +23,12 @@ namespace Core {
 								Globals_Init();
 								SetupShaders();
 								SetupModels();
-								m_ImGui->Init(AppWindow->GetWindow());
+								EImGui->Init(AppWindow->GetWindow());
 
 				}
 
 				GL_Core::~GL_Core() {
-								m_ImGui->CleanUp();
+								EImGui->CleanUp();
 								AppWindow->CleanUp();
 
 				}
@@ -37,9 +37,8 @@ namespace Core {
 								AppWindow->pollEvents();
 								bool close = !AppWindow->ShouldClose();
 								StartFrame();
-								m_ImGui->StartFrame();
-								glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-								glClearColor(m_BGColor.r, m_BGColor.g, m_BGColor.b, 1.f);
+								EImGui->StartFrame();
+								GL_Graphics::RenderSystem::Clear();
 								// Very Defaulted base key inputs. redundant in main loop
 								if (AppInput->IsKeyPress(GLFW_KEY_ESCAPE)) {
 												AppWindow->CloseWindow();
@@ -48,7 +47,9 @@ namespace Core {
 				}
 
 				void GL_Core::Next() {
-								m_ImGui->EndFrame();
+								EImGui->RenderStatsTracker();
+
+								EImGui->EndFrame();
 								AppWindow->swapBuffers();
 								EndFrame();
 				}
@@ -96,6 +97,10 @@ namespace Core {
 								m_BGColor.g = p_g;
 								m_BGColor.b = p_b;
 
+				}
+
+				glm::vec3 GL_Core::GetBackgroundColor() {
+								return m_BGColor;
 				}
 
 

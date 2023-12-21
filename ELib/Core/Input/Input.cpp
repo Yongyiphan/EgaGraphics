@@ -48,7 +48,6 @@ namespace Core {
 								m_key->p_action = m_key->c_action;
 								m_key->c_action = action;
 								m_key->mod = mod;
-								std::cout << button << ": " << action << std::endl;
 				}
 
 				void Input::mousescroll_cb(double xoffset, double yoffset) {
@@ -59,14 +58,12 @@ namespace Core {
 				void Input::mousepos_cb(double xpos, double ypos) {
 								mouse_pos_x = xpos;
 								mouse_pos_y = ypos;
-								//std::cout << "Xpos: (" << xpos << " | " << ypos << ")\n";
 				}
 
 				bool Input::IsKeyPress(int key) {
 								KeyInfo* fkey = findKey(key);
 								bool correct = (fkey && (fkey->p_action == GLFW_PRESS && fkey->c_action == GLFW_RELEASE)) ? true : false;
 								if (fkey && fkey->c_action == GLFW_RELEASE) {
-												//std::cout << fkey->key << ": " << fkey->c_action << std::endl;
 												fkey->Reset();
 								}
 								return correct;
@@ -76,7 +73,6 @@ namespace Core {
 								KeyInfo* fkey = findKey(key);
 								bool _true = (fkey && (fkey->c_action == GLFW_REPEAT || fkey->c_action == GLFW_PRESS)) ? true : false;
 								if (fkey && fkey->c_action == GLFW_RELEASE) {
-												//std::cout << fkey->key << ": " << fkey->c_action << std::endl;
 												fkey->Reset();
 								}
 								return _true;
@@ -89,4 +85,15 @@ namespace Core {
 								return &m_KeyList[key];
 				}
 
+
+				void KeyBinding::SetKeyBinding(KeyBindFlag, int key) {
+
+				}
+				int KeyBinding::GetBaseKeyMap(KeyBindFlag p_flag) {
+
+								if (m_BaseKeyActionMap.find(p_flag) != m_BaseKeyActionMap.end()) {
+												return m_BaseKeyActionMap[p_flag];
+								}
+								return -1;
+				}
 }

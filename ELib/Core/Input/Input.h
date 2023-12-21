@@ -2,6 +2,7 @@
 #include <Defines.h>
 #include "Window/GLFW_Window.h"
 #include <optional>
+#include <bitset>
 
 
 
@@ -28,18 +29,29 @@ namespace Core {
 								bool IsKeyPress(int key);
 								bool IsKeyHold(int key);
 
-								bool IsMousePress(int key);
-								bool IsMouseHold(int key);
+								//bool IsMousePress(int key);
+								//bool IsMouseHold(int key);
 								void IsMouseScroll();
 
 
 				private:
-
 								KeyInfo* findKey(int key);
 
 								std::map<int, KeyInfo> m_KeyList;
 								double mouse_scroll_x{}, mouse_scroll_y{};
 								double mouse_pos_x{}, mouse_pos_y{};
+
+				};
+
+
+
+				class KeyBinding : IBaseObject {
+				protected:
+								std::map<Base_Key_Actions, int> m_BaseKeyActionMap;
+				public:
+								KeyBinding() {}
+								void SetKeyBinding(Base_Key_Actions, int key);
+								int GetBaseKeyMap(Base_Key_Actions);
 
 				};
 

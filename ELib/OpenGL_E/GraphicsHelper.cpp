@@ -1,6 +1,7 @@
 #include <epch.h>
 #include "GraphicsHelper.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "Imgui/ImGuiHelper.h"
 
 
 namespace GL_Graphics {
@@ -24,6 +25,7 @@ namespace GL_Graphics {
 								else {
 												GLCall(glDrawArrays(mode, first, count));
 								}
+								Core::RenderStat::GetInstance()[Core::RenderStat::StatType::DrawCalls]++;
 				}
 				void DrawElementCall(GLenum mode, GLsizei count, GLenum type, const void* indices, GLsizei instances) {
 								if (instances) {
@@ -32,5 +34,6 @@ namespace GL_Graphics {
 								else {
 												GLCall(glDrawElements(mode, count, type, indices));
 								}
+								Core::RenderStat::GetInstance()[Core::RenderStat::StatType::DrawCalls]++;
 				}
 }

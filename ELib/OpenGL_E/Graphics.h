@@ -2,6 +2,7 @@
 #include <epch.h>
 #include "GraphicsHelper.h"
 #include "Buffer/Buffer.h"
+#include "Buffer/FrameBuffer.h"
 #include "Render/Render.h"
 
 namespace GL_Graphics {
@@ -17,6 +18,6 @@ namespace GL_Graphics {
 								void StoreModel(const std::string& p_modelname, BufferData);
 								std::shared_ptr<BufferData> GetModel(const std::string& p_modelname);
 
-
 				};
+
 }

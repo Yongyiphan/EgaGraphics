@@ -156,8 +156,7 @@ namespace GL_Graphics {
 				}
 
 
-				BufferData CreateTextModel(ECS::TransformComponent* transc_ptr, ECS::TextComponent* textc_ptr) {
-
+				BufferData CreateTextModel(ECS::TransformComponent*, ECS::TextComponent*) {
 								BufferData BD;
 								return BD;
 				}

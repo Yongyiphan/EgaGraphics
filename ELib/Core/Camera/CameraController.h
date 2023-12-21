@@ -1,15 +1,13 @@
 #pragma once
 #include <epch.h>
+#include <Input/Input.h>
 
 
 namespace Core {
 
 				// Bridge between user controls and Camera's control result
-				class CameraControls {
-								std::map<CAMERA_CONTROL, int> m_CameraBindings;
+				class CameraKeyBinds : Core::KeyBinding {
 				public:
-								void UpdateKeyBind(CAMERA_CONTROL, int);
-
 				};
 
 				class Camera : public virtual IBaseObject {
@@ -26,7 +24,7 @@ namespace Core {
 												float m_Roll, m_Yaw, m_Pitch;
 								}m_CamData{};
 
-								CameraControls m_KeyBindings;
+								CameraKeyBinds m_KeyBindings;
 				private:
 								void CalculateLookAt();
 				public:
@@ -46,6 +44,7 @@ namespace Core {
 								void Zoom(float);
 								void Toggle3D(bool = false);
 								void ToggleView(bool = false);
+								virtual void Update(int key);
 				};
 
 
@@ -60,6 +59,7 @@ namespace Core {
 								CameraManager& operator=(const CameraManager&) = delete;
 								void AddCamera(Camera*);
 								void Update(double p_deltatime);
+								Camera* GetCurrentCamera();
 
 
 				};

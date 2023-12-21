@@ -7,7 +7,6 @@ namespace Core {
 				void Camera::CalculateLookAt() {
 								static glm::vec3 C_Up{ 0.f, 1.f, 0.f };
 
-
 				}
 
 				Camera::Camera(const std::string& p_Name, glm::vec3 p_Position, float p_width, float p_height) {
@@ -39,28 +38,34 @@ namespace Core {
 								m_CamData.m_Pitch = p_Pitch;
 				}
 
+				void Camera::Update(int) {
+
+				}
+
 }
 
 namespace Core {
-				void CameraControls::UpdateKeyBind(CAMERA_CONTROL p_setting, int p_keybind) {
-								m_CameraBindings[p_setting] = p_keybind;
-				}
 
 				CameraManager::CameraManager() {
 
 								EventDispatcher::GetInstance().RegisterEvent(
 												new Event<int>(GL_CORE_EVENT_KEYPRESS,
 																[&](int key) {
-																				E_LOG("INFO", key);
+																				GetCurrentCamera()->Update(key);
 																}));
 				}
 
 				void CameraManager::AddCamera(Camera* p_cam) {
 								m_CameraList[p_cam->GetName()] = std::move(p_cam);
+								m_CurrentCamera = p_cam->GetName();
 				}
 
 				void CameraManager::Update(double) {
 
+				}
+
+				Camera* CameraManager::GetCurrentCamera() {
+								return m_CameraList[m_CurrentCamera];
 				}
 
 }
