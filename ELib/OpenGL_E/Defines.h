@@ -71,16 +71,29 @@ enum class Camera_Key_Actions {
 				MAX_CAM_FLAG = 8,
 };
 
-enum class Base_Key_Actions {
+enum class Base_Key_Actions : unsigned int {
 				NONE = 0,
-				FORWARD,
-				BACKWARD,
-				LEFT,
-				RIGHT,
-				RESET,
+				FORWARD = 1 << 0,
+				BACKWARD = 1 << 1,
+				LEFT = 1 << 2,
+				RIGHT = 1 << 3,
+				UP = 1 << 4,
+				DOWN = 1 << 5,
+				RESET = 1 << 6,
 				MAX_FLAG = 8,
 };
 
+//enum class Base_Key_Actions : size_t {
+//				NONE,
+//				FORWARD,
+//				BACKWARD,
+//				LEFT,
+//				RIGHT,
+//				UP,
+//				DOWN,
+//				RESET,
+//				MAX_FLAG,
+//};
 
 ////////////////////////////////////////////////////////////
 ///																				   INPUT                          ///

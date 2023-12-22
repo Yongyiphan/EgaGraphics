@@ -51,6 +51,8 @@ namespace Core {
 
 								EImGui->EndFrame();
 								AppWindow->swapBuffers();
+								AppInput->Reset();
+								SetFPS_Title();
 								EndFrame();
 				}
 
@@ -64,6 +66,12 @@ namespace Core {
 				}
 
 				void GL_Core::EndFrame() {
+				}
+
+				void GL_Core::SetFPS_Title() {
+								double fps = 1.0 / m_Deltatime;
+								std::string newtitle = AppWindow->GetWindowName() + " FPS [ " + std::to_string(fps) + " ]";
+								glfwSetWindowTitle(AppWindow->GetWindow(), newtitle.c_str());
 				}
 
 				void GL_Core::SetupShaders() {

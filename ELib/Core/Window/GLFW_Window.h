@@ -35,8 +35,10 @@ namespace Core {
 								void SetDimensions(int, int);
 
 								inline GLFWwindow* GetWindow() { return m_pWindow; }
+								inline std::string GetWindowName() { return m_WindowName; }
 
 				private:
+								std::string m_WindowName{};
 								glm::vec2 Dimension{};
 								int GL_Version[2] = { 4,5 };
 								float m_aspect_ratio{ 16.f / 9.f };

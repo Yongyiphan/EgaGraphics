@@ -27,6 +27,9 @@ namespace Core {
 																}));
 				}
 
+				void Input::Reset() {
+				}
+
 				//////////////////////////////////////////////////////////////////
 				///																																																												///
 				///																				INPUT	CALL BACKS																					   ///
@@ -35,16 +38,16 @@ namespace Core {
 
 				void Input::key_cb(int key, int scancode, int action, int mod) {
 								KeyInfo* m_key = findKey(key);
+								m_key->key = key;
 								m_key->scancode = scancode;
 								m_key->p_action = m_key->c_action;
 								m_key->c_action = action;
 								m_key->mod = mod;
-
-								//std::cout << key << ": " << action << std::endl;
 				}
 
 				void Input::mousebutton_cb(int button, int action, int mod) {
 								KeyInfo* m_key = findKey(button);
+								m_key->key = button;
 								m_key->p_action = m_key->c_action;
 								m_key->c_action = action;
 								m_key->mod = mod;
@@ -78,22 +81,41 @@ namespace Core {
 								return _true;
 				}
 
+				bool Input::IsKeyPressHold(int key) {
+								return IsKeyPress(key) || IsKeyHold(key);
+				}
+
 				void Input::IsMouseScroll() {}
+
+
 
 
 				KeyInfo* Input::findKey(int key) {
 								return &m_KeyList[key];
 				}
 
-
-				void KeyBinding::SetKeyBinding(KeyBindFlag, int key) {
+				Base_KeyMap KeyBinding::IsTriggered(const std::shared_ptr<Input>& p_InputSystem) {
+								Base_KeyMap Instructions(Base_Key_Actions::NONE);
+								for (auto& [key, _] : m_BaseKeyActionMap) {
+												if (p_InputSystem->IsKeyPressHold(key)) {
+																Instructions |= _;
+												}
+								}
+								return Instructions;
 
 				}
-				int KeyBinding::GetBaseKeyMap(KeyBindFlag p_flag) {
 
-								if (m_BaseKeyActionMap.find(p_flag) != m_BaseKeyActionMap.end()) {
-												return m_BaseKeyActionMap[p_flag];
+
+				void KeyBinding::SetKeyBinding(int key, Base_KeyMap instruction) {
+								m_BaseKeyActionMap[key] = instruction;
+
+				}
+
+				Base_KeyMap KeyBinding::GetBaseKeyMap(int p_key) {
+
+								if (m_BaseKeyActionMap.find(p_key) != m_BaseKeyActionMap.end()) {
+												return m_BaseKeyActionMap[p_key];
 								}
-								return -1;
+								return Base_KeyMap(Base_Key_Actions::NONE);
 				}
 }

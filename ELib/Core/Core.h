@@ -36,6 +36,7 @@ namespace Core {
 								void StartFrame();
 								void EndFrame();
 								inline double GetDeltaTime() { return m_Deltatime; }
+								void SetFPS_Title();
 				};
 
 

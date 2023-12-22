@@ -40,6 +40,13 @@ int main()
 				transformc.SetPosition({ 0.f, 0.f, 1.f });
 				transformc.SetScale({ 30.f, 30.f, 0.f });
 
+				Core::KeyBinding KeyMap;
+				Core::Base_KeyMap _;
+				KeyMap.SetKeyBinding(GLFW_KEY_W, Core::Base_KeyMap(Base_Key_Actions::UP));
+				KeyMap.SetKeyBinding(GLFW_KEY_S, Core::Base_KeyMap(Base_Key_Actions::DOWN));
+				KeyMap.SetKeyBinding(GLFW_KEY_A, Core::Base_KeyMap(Base_Key_Actions::LEFT));
+				KeyMap.SetKeyBinding(GLFW_KEY_D, Core::Base_KeyMap(Base_Key_Actions::RIGHT));
+
 
 				while (App->Run()) {
 								auto window_size = App->AppWindow->GetDimensions();
@@ -57,21 +64,27 @@ int main()
 
 								{
 
-												GLenum forwardkey = GLFW_KEY_A;
-												if (App->AppInput->IsKeyPress(forwardkey) || App->AppInput->IsKeyHold(forwardkey)) {
-																transformc.SetPosition(transformc.GetPosition() + glm::vec3{ -10.f, 0.f, 0.f });
-												}
-												if (App->AppInput->IsKeyPress(GLFW_KEY_D) || App->AppInput->IsKeyHold(GLFW_KEY_D)) {
-																transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 10.f, 0.f, 0.f });
-												}
+												if () {
+																E_LOG_INFO(CurrentKey->key);
+																if (App->AppInput->IsKeyPressHold(CurrentKey->key)) {
+																				Core::Base_KeyMap Instruction = KeyMap.GetBaseKeyMap(CurrentKey->key);
+																				if (Instruction.IsSet(Base_Key_Actions::UP)) {
+																								transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 0.f, 10.f, 0.f });
+																				}
+																				if (Instruction.IsSet(Base_Key_Actions::DOWN)) {
+																								transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 0.f, -10.f, 0.f });
+																				}
+																				if (Instruction.IsSet(Base_Key_Actions::LEFT)) {
+																								transformc.SetPosition(transformc.GetPosition() + glm::vec3{ -10.f, 0.f, 0.f });
 
-												if (App->AppInput->IsKeyPress(GLFW_KEY_W) || App->AppInput->IsKeyHold(GLFW_KEY_W)) {
-																transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 0.f, 10.f, 0.f });
-												}
-												if (App->AppInput->IsKeyPress(GLFW_KEY_S) || App->AppInput->IsKeyHold(GLFW_KEY_S)) {
-																transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 0.f, -10.f, 0.f });
-												}
+																				}
+																				if (Instruction.IsSet(Base_Key_Actions::RIGHT)) {
+																								transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 10.f, 0.f, 0.f });
 
+																				}
+																}
+
+												}
 								}
 
 								RenderSystem::BatchStart();

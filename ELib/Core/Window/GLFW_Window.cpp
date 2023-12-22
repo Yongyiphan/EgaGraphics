@@ -38,8 +38,9 @@ namespace Core {
 								glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);						// Allow resizable
 								m_aspect_ratio = 16.f / 9.f; // Width / Height
 
+								m_WindowName = "Graphics Playground";
 
-								m_pWindow = glfwCreateWindow(width, height, "Graphic Playground", NULL, NULL);
+								m_pWindow = glfwCreateWindow(width, height, m_WindowName.c_str(), NULL, NULL);
 								if (!m_pWindow) {
 												glfwTerminate();
 												return;
