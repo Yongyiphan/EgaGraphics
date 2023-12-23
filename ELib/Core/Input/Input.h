@@ -34,6 +34,7 @@ namespace Core {
 								//bool IsMousePress(int key);
 								//bool IsMouseHold(int key);
 								void IsMouseScroll();
+								inline std::map<int, KeyInfo*>& GetCurrentSequence() { return ActiveButtonSequence; }
 
 				private:
 								KeyInfo* findKey(int key);
@@ -42,36 +43,54 @@ namespace Core {
 								double mouse_scroll_x{}, mouse_scroll_y{};
 								double mouse_pos_x{}, mouse_pos_y{};
 
+								std::map<int, KeyInfo*> ActiveButtonSequence;
+
 
 				};
 
-				template <typename T>
+				template<typename T, size_t N>
 				class KeyMap {
-								using UI = typename std::underlying_type<T>::type;
-								T m_value;
+								using KM = std::bitset<N>;
+								KM m_value;
 				public:
-								KeyMap() {}
-								KeyMap(T p_value) { m_value = p_value; }
-								KeyMap(const KeyMap<T>& p_value) { m_value = p_value.m_value; }
-								T operator|(const T& p_value) { return static_cast<T>(static_cast<UI>(m_value) | static_cast<UI>(p_value)); }
-								T operator&(const T& p_value) { return static_cast<T>(static_cast<UI>(m_value) & static_cast<UI>(p_value)); }
-								void operator|=(const T& p_value) { m_value = static_cast<T>(static_cast<UI>(m_value) | static_cast<UI>(p_value)); }
-								void operator&=(const T& p_value) { m_value = static_cast<T>(static_cast<UI>(m_value) & static_cast<UI>(p_value)); }
-								void operator|=(const KeyMap<T>& p_value) { m_value = static_cast<T>(static_cast<UI>(m_value) | static_cast<UI>(p_value.m_value)); }
-								void operator&=(const KeyMap<T>& p_value) { m_value = static_cast<T>(static_cast<UI>(m_value) & static_cast<UI>(p_value.m_value)); }
+								KeyMap() = default;
+								KeyMap(T p_value) { m_value.set(STCast(p_value)); }
+								KeyMap(size_t p_value) { m_value.set(p_value); }
+								KeyMap<T, N>& operator|=(const T& flag) {
+												m_value |= KM(1 << STCast(flag));
+												return *this;
+								}
+								KeyMap<T, N>& operator|=(const KeyMap<T, N>& rhs) {
+												m_value |= rhs;
+												return *this;
+								}
 
-								friend bool operator<(const KeyMap<T>& lhs, const KeyMap<T>& rhs) { return static_cast<UI>(lhs.m_value) < static_cast<UI>(rhs.m_value); }
-				public:
-								inline bool IsSet(const T& p_value) {
-												auto _ = (static_cast<UI>(m_value) & static_cast<UI>(p_value));
-												return  _ != static_cast<UI>(0);
+								KeyMap<T, N>& operator&=(const T& flag) {
+												m_value &= ~(KM(1 << STCast(flag)));
+												return *this;
+								}
+								KeyMap<T, N>& operator&=(const KeyMap<T, N>& rhs) {
+												m_value &= ~(rhs.m_value);
+												return *this;
+								}
+
+								bool IsSet(const T& flag) {
+												return m_value.test(STCast(flag));
+								}
+
+								bool IsSet(const size_t& flag) {
+												return m_value.test(flag);
+								}
+
+								void UnSet(const T& flag) {
+												m_value.reset(STCast(flag));
 								}
 
 				};
 
-				//using Base_KeyMap = KeyMap<Base_Key_Actions>;
-				using Base_KeyMap = std::bitset<static_cast<size_t>(Base_Key_Actions::MAX_FLAG)>;
 
+
+				using Base_KeyMap = KeyMap<Base_Key_Actions, STCast(Base_Key_Actions::MAX_FLAG)>;
 
 
 				class KeyBinding : IBaseObject {
@@ -79,9 +98,17 @@ namespace Core {
 								std::map<int, Base_KeyMap> m_BaseKeyActionMap;
 				public:
 								KeyBinding() {}
+								virtual void Init() {}
 								void SetKeyBinding(int key, Base_KeyMap instruction);
-								Base_KeyMap GetBaseKeyMap(int key);
-								Base_KeyMap IsTriggered(const std::shared_ptr<Input>& InputSystem);
+								//Base_KeyMap GetBaseKeyMap(int key);
+								void Update(const std::map<int, KeyInfo*>& KeySequence, std::function<void(Base_KeyMap)> func_ptr) {
+												for (auto [key, _] : KeySequence) {
+																if (m_BaseKeyActionMap.find(key) != m_BaseKeyActionMap.end()) {
+																				func_ptr(m_BaseKeyActionMap[key]);
+																}
+												}
+
+								}
 				};
 
 }

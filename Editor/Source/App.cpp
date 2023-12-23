@@ -7,6 +7,45 @@ using namespace GL_Graphics;
 #include <Vulkan_E/Core/Core.h>
 #endif
 
+struct TestObject {
+				Core::KeyBinding m_KeyBind;
+				ECS::TransformComponent transformc;
+				ECS::SpriteComponent spritec;
+				ECS::MeshComponent meshc;
+				ECS::TextComponent textc;
+				Core::KeyBinding KeyMap;
+
+				TestObject() {
+								transformc = ECS::TransformComponent();
+								spritec = ECS::SpriteComponent();
+								meshc = ECS::MeshComponent("FilledCircle");
+								textc = ECS::TextComponent();
+				}
+
+				inline void TestMovement(Core::Base_KeyMap Instruction) {
+								if (Instruction.IsSet(Base_Key_Actions::UP)) {
+												transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 0.f, 10.f, 0.f });
+								}
+								if (Instruction.IsSet(Base_Key_Actions::DOWN)) {
+												transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 0.f, -10.f, 0.f });
+								}
+								if (Instruction.IsSet(Base_Key_Actions::LEFT)) {
+												transformc.SetPosition(transformc.GetPosition() + glm::vec3{ -10.f, 0.f, 0.f });
+
+								}
+								if (Instruction.IsSet(Base_Key_Actions::RIGHT)) {
+												transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 10.f, 0.f, 0.f });
+								}
+				}
+
+				inline void Update(const std::shared_ptr<Core::Input>& p_input) {
+
+								KeyMap.Update(p_input->GetCurrentSequence(), [&](Core::Base_KeyMap l) {
+												TestMovement(l);
+												});
+				}
+};
+
 int main()
 {
 				Core::SetDriver(Core::Driver::OpenGL);
@@ -32,20 +71,15 @@ int main()
 
 				glm::mat4 proj_view(1.f);
 
-				auto transformc = ECS::TransformComponent();
-				auto spritec = ECS::SpriteComponent();
-				auto meshc = ECS::MeshComponent("FilledCircle");
-				auto textc = ECS::TextComponent();
+				TestObject TO{};
+				TO.transformc.SetPosition({ 0.f, 0.f, 1.f });
+				TO.transformc.SetScale({ 30.f, 30.f, 0.f });
 
-				transformc.SetPosition({ 0.f, 0.f, 1.f });
-				transformc.SetScale({ 30.f, 30.f, 0.f });
+				TO.KeyMap.SetKeyBinding(GLFW_KEY_A, { Base_Key_Actions::LEFT });
+				TO.KeyMap.SetKeyBinding(GLFW_KEY_D, { Base_Key_Actions::RIGHT });
+				TO.KeyMap.SetKeyBinding(GLFW_KEY_W, { Base_Key_Actions::UP });
+				TO.KeyMap.SetKeyBinding(GLFW_KEY_S, { Base_Key_Actions::DOWN });
 
-				Core::KeyBinding KeyMap;
-				Core::Base_KeyMap _;
-				KeyMap.SetKeyBinding(GLFW_KEY_W, Core::Base_KeyMap(Base_Key_Actions::UP));
-				KeyMap.SetKeyBinding(GLFW_KEY_S, Core::Base_KeyMap(Base_Key_Actions::DOWN));
-				KeyMap.SetKeyBinding(GLFW_KEY_A, Core::Base_KeyMap(Base_Key_Actions::LEFT));
-				KeyMap.SetKeyBinding(GLFW_KEY_D, Core::Base_KeyMap(Base_Key_Actions::RIGHT));
 
 
 				while (App->Run()) {
@@ -63,32 +97,12 @@ int main()
 								//proj_view = App->AppCamera->GetCurrentCamera()->GetProjectionViewMatrix();
 
 								{
+												TO.Update(App->AppInput);
 
-												if () {
-																E_LOG_INFO(CurrentKey->key);
-																if (App->AppInput->IsKeyPressHold(CurrentKey->key)) {
-																				Core::Base_KeyMap Instruction = KeyMap.GetBaseKeyMap(CurrentKey->key);
-																				if (Instruction.IsSet(Base_Key_Actions::UP)) {
-																								transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 0.f, 10.f, 0.f });
-																				}
-																				if (Instruction.IsSet(Base_Key_Actions::DOWN)) {
-																								transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 0.f, -10.f, 0.f });
-																				}
-																				if (Instruction.IsSet(Base_Key_Actions::LEFT)) {
-																								transformc.SetPosition(transformc.GetPosition() + glm::vec3{ -10.f, 0.f, 0.f });
-
-																				}
-																				if (Instruction.IsSet(Base_Key_Actions::RIGHT)) {
-																								transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 10.f, 0.f, 0.f });
-
-																				}
-																}
-
-												}
 								}
 
 								RenderSystem::BatchStart();
-								RenderSystem::Render(*GMan.GetModel(meshc.GetMeshName()).get(), &transformc, proj_view);
+								RenderSystem::Render(*GMan.GetModel(TO.meshc.GetMeshName()).get(), &TO.transformc, proj_view);
 								RenderSystem::BatchEnd();
 
 								// Require to prep for next cycle
@@ -98,5 +112,4 @@ int main()
 #endif
 								App->Next();
 				}
-
 }

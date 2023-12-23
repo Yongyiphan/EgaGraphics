@@ -28,6 +28,14 @@ namespace Core {
 				}
 
 				void Input::Reset() {
+								for (auto it = ActiveButtonSequence.begin(); it != ActiveButtonSequence.end();) {
+												if (it->second->c_action == GLFW_RELEASE) {
+																it = ActiveButtonSequence.erase(it);
+												}
+												else {
+																++it;
+												}
+								}
 				}
 
 				//////////////////////////////////////////////////////////////////
@@ -43,6 +51,7 @@ namespace Core {
 								m_key->p_action = m_key->c_action;
 								m_key->c_action = action;
 								m_key->mod = mod;
+								ActiveButtonSequence[key] = m_key;
 				}
 
 				void Input::mousebutton_cb(int button, int action, int mod) {
@@ -51,6 +60,7 @@ namespace Core {
 								m_key->p_action = m_key->c_action;
 								m_key->c_action = action;
 								m_key->mod = mod;
+								ActiveButtonSequence[button] = m_key;
 				}
 
 				void Input::mousescroll_cb(double xoffset, double yoffset) {
@@ -62,6 +72,7 @@ namespace Core {
 								mouse_pos_x = xpos;
 								mouse_pos_y = ypos;
 				}
+
 
 				bool Input::IsKeyPress(int key) {
 								KeyInfo* fkey = findKey(key);
@@ -94,28 +105,8 @@ namespace Core {
 								return &m_KeyList[key];
 				}
 
-				Base_KeyMap KeyBinding::IsTriggered(const std::shared_ptr<Input>& p_InputSystem) {
-								Base_KeyMap Instructions(Base_Key_Actions::NONE);
-								for (auto& [key, _] : m_BaseKeyActionMap) {
-												if (p_InputSystem->IsKeyPressHold(key)) {
-																Instructions |= _;
-												}
-								}
-								return Instructions;
-
-				}
-
-
 				void KeyBinding::SetKeyBinding(int key, Base_KeyMap instruction) {
 								m_BaseKeyActionMap[key] = instruction;
-
 				}
 
-				Base_KeyMap KeyBinding::GetBaseKeyMap(int p_key) {
-
-								if (m_BaseKeyActionMap.find(p_key) != m_BaseKeyActionMap.end()) {
-												return m_BaseKeyActionMap[p_key];
-								}
-								return Base_KeyMap(Base_Key_Actions::NONE);
-				}
 }
