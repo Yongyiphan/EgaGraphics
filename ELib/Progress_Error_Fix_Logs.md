@@ -39,9 +39,9 @@ std::function<void(Args...)>
 * Generic Base models [-1.0f,1.0f] e.g Point, Line, Quad, Circle
 
 # Progress Log:
-(11/12/23) [Buffer Creation](##Buffer-Creation) : Dynamic Vertex Array buffer creation
-(18/12/23) [Render](##Render)      : Able to render basic shapes;
-(24/12/23) [Key Mapping](##Key-Mapping) : Implemented KeyBinding, potential remapping of keys to actions
+* (11/12/23) [Buffer Creation](##Buffer-Creation) : Dynamic Vertex Array buffer creation
+* (18/12/23) [Render](##Render)      : Able to render basic shapes;
+* (24/12/23) [Key Mapping](##Key-Mapping) : Implemented KeyBinding, potential remapping of keys to actions
 
 ## Buffer Creation
 In: Buffer.h, Buffer.cpp, Buffer.inl
