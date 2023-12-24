@@ -38,7 +38,7 @@ struct TestObject {
 								}
 				}
 
-				inline void Update(const std::shared_ptr<Core::Input>& p_input) {
+				void Update(const std::shared_ptr<Core::Input>& p_input) {
 
 								KeyMap.Update(p_input->GetCurrentSequence(), [&](Core::Base_KeyMap l) {
 												TestMovement(l);
@@ -73,27 +73,29 @@ int main()
 
 				TestObject TO{};
 				TO.transformc.SetPosition({ 0.f, 0.f, 1.f });
-				TO.transformc.SetScale({ 30.f, 30.f, 0.f });
+				TO.transformc.SetScale({ 30.f, 30.f, 1.f });
 
 				TO.KeyMap.SetKeyBinding(GLFW_KEY_A, { ENUM_Key_Actions::LEFT });
 				TO.KeyMap.SetKeyBinding(GLFW_KEY_D, { ENUM_Key_Actions::RIGHT });
 				TO.KeyMap.SetKeyBinding(GLFW_KEY_W, { ENUM_Key_Actions::UP });
 				TO.KeyMap.SetKeyBinding(GLFW_KEY_S, { ENUM_Key_Actions::DOWN });
 
-				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_Z, Core::Base_KeyMap(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::FORWARD));
-				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_X, Core::Base_KeyMap(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::BACKWARD));
+				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_Z, { ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::FORWARD });
+				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_X, { ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::BACKWARD });
 				Core::Base_KeyMap km(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::FORWARD);
 
+				TestObject BG{};
+				BG.transformc.SetScale({ FWidth, FHeight, 1.f });
+				BG.meshc.SetMeshName("FilledQuad");
 
+				RenderSystem::SetClearColor(App->GetBackgroundColor());
 				while (App->Run()) {
 								auto window_size = App->AppWindow->GetDimensions();
-								//#define USE_IMGUI_FRAMEBUFFER_IMAGE
-#ifdef USE_IMGUI_FRAMEBUFFER_IMAGE
+#define USE_FRAMEBUFFER_IMAGE
+#ifdef USE_FRAMEBUFFER_IMAGE
 								MainBuffer.Resize(window_size.x, window_size.y);
 								FrameBuffer::Bind(MainBuffer.GetFrameBufferID());
 #endif
-								RenderSystem::ClearColor(App->GetBackgroundColor());
-
 								App->AppCamera->Update(App->AppInput, App->GetDeltaTime());
 								proj_view[0].x = 2.f / window_size.x;
 								proj_view[1].y = 2.f / window_size.y;
@@ -104,13 +106,15 @@ int main()
 								}
 
 								RenderSystem::BatchStart();
+								RenderSystem::Render(*GMan.GetModel(BG.meshc.GetMeshName()).get(), &BG.transformc, proj_view);
 								RenderSystem::Render(*GMan.GetModel(TO.meshc.GetMeshName()).get(), &TO.transformc, proj_view);
 								RenderSystem::BatchEnd();
 
 								// Require to prep for next cycle
-#ifdef USE_IMGUI_FRAMEBUFFER_IMAGE
-								//FrameBuffer::UnBind();
+#ifdef USE_FRAMEBUFFER_IMAGE
+								FrameBuffer::UnBind();
 								//App->EImGui->RenderFramebuffer(MainBuffer, glm::vec2{ Window_Width, Window_Height });
+								RenderSystem::Render(*GMan.GetModel("FilledQuad").get(), FWidth, FHeight, MainBuffer.GetColorAttachment(0), proj_view);
 #endif
 								App->Next();
 				}

@@ -13,4 +13,5 @@ uniform mat4 trs;
 void main(){
     gl_Position = trs * vec4(aVertexPosition, 1.0);
     v_Color = aVertexColor;
+    v_TextureCoordinates = aVertexTextureCoordinates;
 }

@@ -26,16 +26,54 @@ namespace Core {
 								m_AspectRatio = p_Width / p_Height;
 				}
 
-				void Camera::SetRoll(float p_Roll) {
-								m_CamData.m_Roll = p_Roll;
+				void Camera::SetMovement(ENUM_Key_Actions actions, float p_value) {
+								switch (actions) {
+								case ENUM_Key_Actions::ROLL:
+												m_Movement.m_Roll = p_value;
+												break;
+								case ENUM_Key_Actions::YAW:
+												m_Movement.m_Yaw = p_value;
+												break;
+								case ENUM_Key_Actions::PITCH:
+												m_Movement.m_Pitch = p_value;
+												break;
+								case ENUM_Key_Actions::ZOOM:
+												m_Movement.m_ZoomSpeed = p_value;
+												break;
+								default:
+												m_Movement.m_MoveSpeed = p_value;
+												break;
+								}
 				}
 
-				void Camera::SetYaw(float p_Yaw) {
-								m_CamData.m_Yaw = p_Yaw;
-				}
+				void Camera::ApplyMovement(ENUM_Key_Actions actions, float p_value) {
+								switch (actions) {
+								case ENUM_Key_Actions::ROLL:
+												m_CamData.m_Roll += p_value;
+												break;
+								case ENUM_Key_Actions::YAW:
+												m_CamData.m_Yaw += p_value;
+												break;
+								case ENUM_Key_Actions::PITCH:
+												m_CamData.m_Pitch += p_value;
+												break;
+								case ENUM_Key_Actions::ZOOM:
+												m_CamData.m_Zoom += p_value;
+												break;
+								case ENUM_Key_Actions::LEFT:
+												m_Position.x += p_value;
+												break;
+								case ENUM_Key_Actions::RIGHT:
+												m_Position.x += p_value;
+												break;
+								case ENUM_Key_Actions::UP:
+												m_Position.y += p_value;
+												break;
+								case ENUM_Key_Actions::DOWN:
+												m_Position.y += p_value;
+												break;
+								}
 
-				void Camera::SetPitch(float p_Pitch) {
-								m_CamData.m_Pitch = p_Pitch;
 				}
 
 				void Camera::SetKeyBind(int Key, Base_KeyMap instructions) {
@@ -43,12 +81,14 @@ namespace Core {
 				}
 
 				void Camera::Update(const std::shared_ptr<Core::Input>& p_inputsystem, double) {
-								m_KeyBindings.Update(p_inputsystem->GetCurrentSequence(), [](Base_KeyMap instructions) {
+								m_KeyBindings.Update(p_inputsystem->GetCurrentSequence(), [&](Base_KeyMap instructions) {
 												if (instructions.CheckFlags(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::FORWARD)) {
 																E_LOG_INFO("Zoom in");
+																ApplyMovement(ENUM_Key_Actions::ZOOM, m_Movement.m_ZoomSpeed);
 												}
 												if (instructions.CheckFlags(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::BACKWARD)) {
 																E_LOG_INFO("Zoom out");
+																ApplyMovement(ENUM_Key_Actions::ZOOM, -m_Movement.m_ZoomSpeed);
 												}
 												});
 

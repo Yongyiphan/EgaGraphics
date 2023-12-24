@@ -39,7 +39,74 @@ std::function<void(Args...)>
 * Generic Base models [-1.0f,1.0f] e.g Point, Line, Quad, Circle
 
 # Progress Log:
-[18/12/23]: Able to render basic shapes;
+(11/12/23) [Buffer Creation](##Buffer-Creation) : Dynamic Vertex Array buffer creation
+(18/12/23) [Render](##Render)      : Able to render basic shapes;
+(24/12/23) [Key Mapping](##Key-Mapping) : Implemented KeyBinding, potential remapping of keys to actions
+
+## Buffer Creation
+In: Buffer.h, Buffer.cpp, Buffer.inl
+* Able to Create buffer, with custom vertex array layout dynamically.
+* Using template specialization of a member function to specify data specs of each vertex array attribute
+* Allows for custom container types, like glm::vec2, glm::vec3 or custom math containers.
+* Dynamically Resize of OpenGL buffer creation calls.
+```cpp
+// Creating a buffer e.g
+BufferData BD;
+BD.ConstructBufferElement<glm::vec3>("pos", pos_vtx);
+BD.ConstructBufferElement<glm::vec3>("clr", clr_vtx);
+BD.ConstructBufferElement<glm::vec2>("tex", tex_vtx);
+BD.ConstructIndexBuffer(idx_vtx);
+```
+
+
+## Render 
+In: Model.h, Model.cpp
+Implements model coordinates from [-1, 1] dimensions. Creates BufferData class objects
+Implemented Models: Point, Line, Hollow Quad, Filled Quad, Hollow Circle, Filled Circle
+
+## Key Mapping
+In: Defines.h, Input.h, Input.cpp (e.g in CameraController.cpp)
+Implements using enum flags as actions tied to a key / mouse input.
+Flags can be combined for specific configurations / implementation.
+### ENUM_Key_Actions (Defines.h)
+* Base actions, flags can be combined for unique instructions
+### class KeyMap: 
+* wraps std::bitset<MAX_FLAG> to contain enum operations
+KeyMap.CheckFlag: Takes in a sequence of enum flags, and check if object has specified flags
+KeyMap.SetFlag: Takes in a sequence of enum flags, and set flags onto the bitset member value
+```cpp
+KeyMap TestKeyMap;
+// Single Actions
+TestKeyMap.SetFlag(GLFW_KEY_A, {ENUM_Key_Actions::FORWARD});
+// Combination of Actions
+TestKeyMap.SetFlag(GLFW_KEY_Z, {ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::FORWARD});
+```
+
+### class KeyBinding:
+Executes instructions, bound to key
+```cpp
+// Code Snippet Definition:
+void KeyBinding::Update(const std::map<int, KeyInfo*>& KeySequence, std::function<void(Base_KeyMap)> func_ptr) {
+    for (auto [key, _] : KeySequence) {
+        if (m_BaseKeyActionMap.find(key) != m_BaseKeyActionMap.end()) {
+            func_ptr(m_BaseKeyActionMap[key]);
+        }
+    }
+}
+
+// Code Snippet e.g
+Core::KeyBinding m_KeyBindings;
+m_KeyBindings.Update(p_inputsystem->GetCurrentSequence(), [](Base_KeyMap instructions) {
+    if (instructions.CheckFlags(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::FORWARD)) {
+        E_LOG_INFO("Zoom in");
+    }
+    if (instructions.CheckFlags(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::BACKWARD)) {
+        E_LOG_INFO("Zoom out");
+    }
+    });
+```
+
+
 
 # Difficulties
 ### Feature: Buffer Layout Element Specialization for Different Types

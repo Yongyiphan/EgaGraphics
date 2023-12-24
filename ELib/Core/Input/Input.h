@@ -98,7 +98,6 @@ namespace Core {
 																				func_ptr(m_BaseKeyActionMap[key]);
 																}
 												}
-
 								}
 				};
 

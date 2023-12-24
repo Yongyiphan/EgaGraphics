@@ -2,23 +2,56 @@
 #include <epch.h>
 #include "Buffer/Buffer.h"
 
+enum GPU_LIMIT : int {
+				MAX_TEXTURE_SLOT = 16,
+};
+enum BATCH_LIMIT : size_t {
+				MAX_BATCH_OBJECT = 1000,
+};
 namespace GL_Graphics {
 
-				class RenderSystem :public ISingleton<RenderSystem> {
+				struct BatchInfo {
+								bool IsFilled{ false };
 
+								// Sort by primitive;
+								std::map<GLenum, BufferData> m_Data;
+								void Allocate();
+								void Reset();
+				};
+
+				class RenderSystem :public ISingleton<RenderSystem> {
+								int Texture_Slot[GPU_LIMIT::MAX_TEXTURE_SLOT];
+								glm::vec3 Clear_Color;
+								inline glm::vec3 GetClearColor() { return Clear_Color; }
+								std::vector<BatchInfo> TotalBatchedContainer;
+				public:
 								void BatchFlush();
 								void BatchNew();
+								int AddTextureToSlot(TextureID);
+								void ResetTextureSlotArray();
+
+								////////////////////////////////////////////////////////////
+								///                                                      ///
+								///																	 STATIC FUNCTIONS																			 ///
+								///                                                      ///
+								////////////////////////////////////////////////////////////
 				public:
 								static void Render(BufferData, ECS::TransformComponent*, glm::mat4 projection);
 								static void Render(const BufferData&, ECS::TransformComponent*, ECS::SpriteComponent*);
 								static void Render(const BufferData&, ECS::TransformComponent*, ECS::TextComponent*);
-
+								// Render Framebuffer as texture
+								static void Render(BufferData, float, float, TextureID, glm::mat4 projection);
+				public: // Batch Render
 								static void BatchStart();
 								static void BatchEnd();
 								static void Submit();
+				public:
+								static void SetClearColor(float r, float g, float b);
+								static void SetClearColor(glm::vec3 clr);
 								static void ClearColor(float r, float g, float b);
 								static void ClearColor(glm::vec3 clr);
-								static void Clear();
+								static void ClearColor(); // Using internal member variable: Clear_Color
+								static void Clear(); // Clear buffer
 				};
 
 }

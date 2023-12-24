@@ -18,8 +18,11 @@ namespace Core {
 								glm::mat4 m_ProjectionMtx{};
 								struct CamData {
 												glm::vec3 Up{}, Right{}, Direction{};
-												float m_Roll, m_Yaw, m_Pitch;
+												float m_Roll, m_Yaw, m_Pitch, m_Zoom;
 								}m_CamData{};
+								struct MovementSpecs {
+												float m_Roll, m_Yaw, m_Pitch, m_MoveSpeed, m_ZoomSpeed;
+								}m_Movement{};
 
 								Core::KeyBinding m_KeyBindings;
 				private:
@@ -33,16 +36,14 @@ namespace Core {
 								inline glm::mat4 GetProjection() { return m_ProjectionMtx; }
 								inline glm::mat4 GetProjectionViewMatrix() { return m_ProjectionMtx * GetViewMatrix(); }
 				public:
-								void SetYaw(float);
-								void SetRoll(float);
-								void SetPitch(float);
+								void SetMovement(ENUM_Key_Actions, float value);
 								void SetKeyBind(int Key, Base_KeyMap instructions);
-				public:
-								void SetCameraWindow(float p_Width, float p_Height);
-								void Zoom(float);
 								void Toggle3D(bool = false);
 								void ToggleView(bool = false);
+				public:
+								void SetCameraWindow(float p_Width, float p_Height);
 								virtual void Update(const std::shared_ptr<Core::Input>&, double);
+								virtual void ApplyMovement(ENUM_Key_Actions, float value);
 				};
 
 
