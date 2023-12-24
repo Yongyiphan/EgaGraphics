@@ -39,10 +39,11 @@ std::function<void(Args...)>
 * Generic Base models [-1.0f,1.0f] e.g Point, Line, Quad, Circle
 
 # Progress Log:
-* (11/12/23) [Buffer Creation](##-buffer-creation) : Dynamic Vertex Array buffer creation
-* (18/12/23) [Render](##-render)      : Able to render basic shapes;
-* (24/12/23) [Key Mapping](##-key-mapping) : Implemented KeyBinding, potential remapping of keys to actions
+* (11/12/23) [Buffer Creation](#buffer-creation) : Dynamic Vertex Array buffer creation
+* (18/12/23) [Render](#render)      : Able to render basic shapes;
+* (24/12/23) [Key Mapping](#key-mapping) : Implemented KeyBinding, potential remapping of keys to actions
 
+<a id="buffer-creation"></a>
 ## Buffer Creation
 In: Buffer.h, Buffer.cpp, Buffer.inl
 * Able to Create buffer, with custom vertex array layout dynamically.
@@ -59,11 +60,13 @@ BD.ConstructIndexBuffer(idx_vtx);
 ```
 
 
+<a id="render"></a>
 ## Render 
 In: Model.h, Model.cpp
 Implements model coordinates from [-1, 1] dimensions. Creates BufferData class objects
 Implemented Models: Point, Line, Hollow Quad, Filled Quad, Hollow Circle, Filled Circle
 
+<a id="key-mapping"></a>
 ## Key Mapping
 In: Defines.h, Input.h, Input.cpp (e.g in CameraController.cpp)
 Implements using enum flags as actions tied to a key / mouse input.
