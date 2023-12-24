@@ -38,7 +38,19 @@ namespace Core {
 								m_CamData.m_Pitch = p_Pitch;
 				}
 
-				void Camera::Update(int) {
+				void Camera::SetKeyBind(int Key, Base_KeyMap instructions) {
+								m_KeyBindings.SetKeyBinding(Key, instructions);
+				}
+
+				void Camera::Update(const std::shared_ptr<Core::Input>& p_inputsystem, double) {
+								m_KeyBindings.Update(p_inputsystem->GetCurrentSequence(), [](Base_KeyMap instructions) {
+												if (instructions.CheckFlags(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::FORWARD)) {
+																E_LOG_INFO("Zoom in");
+												}
+												if (instructions.CheckFlags(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::BACKWARD)) {
+																E_LOG_INFO("Zoom out");
+												}
+												});
 
 				}
 
@@ -47,12 +59,6 @@ namespace Core {
 namespace Core {
 
 				CameraManager::CameraManager() {
-
-								EventDispatcher::GetInstance().RegisterEvent(
-												new Event<int>(GL_CORE_EVENT_KEYPRESS,
-																[&](int key) {
-																				GetCurrentCamera()->Update(key);
-																}));
 				}
 
 				void CameraManager::AddCamera(Camera* p_cam) {
@@ -60,7 +66,8 @@ namespace Core {
 								m_CurrentCamera = p_cam->GetName();
 				}
 
-				void CameraManager::Update(double) {
+				void CameraManager::Update(const std::shared_ptr<Core::Input>& p_input, double p_deltatime) {
+								this->GetCurrentCamera()->Update(p_input, p_deltatime);
 
 				}
 

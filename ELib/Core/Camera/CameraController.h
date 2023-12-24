@@ -6,9 +6,6 @@
 namespace Core {
 
 				// Bridge between user controls and Camera's control result
-				class CameraKeyBinds : Core::KeyBinding {
-				public:
-				};
 
 				class Camera : public virtual IBaseObject {
 								glm::vec3 m_Dimensions{};
@@ -24,7 +21,7 @@ namespace Core {
 												float m_Roll, m_Yaw, m_Pitch;
 								}m_CamData{};
 
-								CameraKeyBinds m_KeyBindings;
+								Core::KeyBinding m_KeyBindings;
 				private:
 								void CalculateLookAt();
 				public:
@@ -39,12 +36,13 @@ namespace Core {
 								void SetYaw(float);
 								void SetRoll(float);
 								void SetPitch(float);
+								void SetKeyBind(int Key, Base_KeyMap instructions);
 				public:
 								void SetCameraWindow(float p_Width, float p_Height);
 								void Zoom(float);
 								void Toggle3D(bool = false);
 								void ToggleView(bool = false);
-								virtual void Update(int key);
+								virtual void Update(const std::shared_ptr<Core::Input>&, double);
 				};
 
 
@@ -58,7 +56,7 @@ namespace Core {
 								CameraManager(const CameraManager&) = delete;
 								CameraManager& operator=(const CameraManager&) = delete;
 								void AddCamera(Camera*);
-								void Update(double p_deltatime);
+								void Update(const std::shared_ptr<Core::Input>& p_input, double p_deltatime);
 								Camera* GetCurrentCamera();
 
 

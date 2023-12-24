@@ -54,43 +54,34 @@ namespace Core {
 								KM m_value;
 				public:
 								KeyMap() = default;
-								KeyMap(T p_value) { m_value.set(STCast(p_value)); }
-								KeyMap(size_t p_value) { m_value.set(p_value); }
-								KeyMap<T, N>& operator|=(const T& flag) {
-												m_value |= KM(1 << STCast(flag));
-												return *this;
+								KeyMap(const T& singleFlag) {
+												SetFlags(singleFlag);
 								}
-								KeyMap<T, N>& operator|=(const KeyMap<T, N>& rhs) {
-												m_value |= rhs;
-												return *this;
+								template<typename... Enums>
+								KeyMap(Enums... flags) {
+												SetFlags(flags...);
 								}
 
-								KeyMap<T, N>& operator&=(const T& flag) {
-												m_value &= ~(KM(1 << STCast(flag)));
-												return *this;
-								}
-								KeyMap<T, N>& operator&=(const KeyMap<T, N>& rhs) {
-												m_value &= ~(rhs.m_value);
-												return *this;
+								template <typename... Enums>
+								void Set(Enums... flags) {
+												m_value |= (KM(flags) | ...);
 								}
 
-								bool IsSet(const T& flag) {
-												return m_value.test(STCast(flag));
+								template <typename... Enums>
+								bool CheckFlags(Enums...flags) {
+												return (m_value[STCast(flags)] && ...);
 								}
 
-								bool IsSet(const size_t& flag) {
-												return m_value.test(flag);
-								}
-
-								void UnSet(const T& flag) {
-												m_value.reset(STCast(flag));
+								template<typename... Enums>
+								void SetFlags(Enums... flags) {
+												(m_value.set(STCast(flags)), ...);
 								}
 
 				};
 
 
 
-				using Base_KeyMap = KeyMap<Base_Key_Actions, STCast(Base_Key_Actions::MAX_FLAG)>;
+				using Base_KeyMap = KeyMap<ENUM_Key_Actions, STCast(ENUM_Key_Actions::MAX_FLAG)>;
 
 
 				class KeyBinding : IBaseObject {

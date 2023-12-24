@@ -23,17 +23,17 @@ struct TestObject {
 				}
 
 				inline void TestMovement(Core::Base_KeyMap Instruction) {
-								if (Instruction.IsSet(Base_Key_Actions::UP)) {
+								if (Instruction.CheckFlags(ENUM_Key_Actions::UP)) {
 												transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 0.f, 10.f, 0.f });
 								}
-								if (Instruction.IsSet(Base_Key_Actions::DOWN)) {
+								if (Instruction.CheckFlags(ENUM_Key_Actions::DOWN)) {
 												transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 0.f, -10.f, 0.f });
 								}
-								if (Instruction.IsSet(Base_Key_Actions::LEFT)) {
+								if (Instruction.CheckFlags(ENUM_Key_Actions::LEFT)) {
 												transformc.SetPosition(transformc.GetPosition() + glm::vec3{ -10.f, 0.f, 0.f });
 
 								}
-								if (Instruction.IsSet(Base_Key_Actions::RIGHT)) {
+								if (Instruction.CheckFlags(ENUM_Key_Actions::RIGHT)) {
 												transformc.SetPosition(transformc.GetPosition() + glm::vec3{ 10.f, 0.f, 0.f });
 								}
 				}
@@ -75,11 +75,14 @@ int main()
 				TO.transformc.SetPosition({ 0.f, 0.f, 1.f });
 				TO.transformc.SetScale({ 30.f, 30.f, 0.f });
 
-				TO.KeyMap.SetKeyBinding(GLFW_KEY_A, { Base_Key_Actions::LEFT });
-				TO.KeyMap.SetKeyBinding(GLFW_KEY_D, { Base_Key_Actions::RIGHT });
-				TO.KeyMap.SetKeyBinding(GLFW_KEY_W, { Base_Key_Actions::UP });
-				TO.KeyMap.SetKeyBinding(GLFW_KEY_S, { Base_Key_Actions::DOWN });
+				TO.KeyMap.SetKeyBinding(GLFW_KEY_A, { ENUM_Key_Actions::LEFT });
+				TO.KeyMap.SetKeyBinding(GLFW_KEY_D, { ENUM_Key_Actions::RIGHT });
+				TO.KeyMap.SetKeyBinding(GLFW_KEY_W, { ENUM_Key_Actions::UP });
+				TO.KeyMap.SetKeyBinding(GLFW_KEY_S, { ENUM_Key_Actions::DOWN });
 
+				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_Z, Core::Base_KeyMap(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::FORWARD));
+				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_X, Core::Base_KeyMap(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::BACKWARD));
+				Core::Base_KeyMap km(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::FORWARD);
 
 
 				while (App->Run()) {
@@ -91,14 +94,13 @@ int main()
 #endif
 								RenderSystem::ClearColor(App->GetBackgroundColor());
 
-								App->AppCamera->Update(App->GetDeltaTime());
+								App->AppCamera->Update(App->AppInput, App->GetDeltaTime());
 								proj_view[0].x = 2.f / window_size.x;
 								proj_view[1].y = 2.f / window_size.y;
 								//proj_view = App->AppCamera->GetCurrentCamera()->GetProjectionViewMatrix();
 
 								{
 												TO.Update(App->AppInput);
-
 								}
 
 								RenderSystem::BatchStart();
