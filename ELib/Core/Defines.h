@@ -81,6 +81,13 @@ enum class ENUM_Key_Actions : size_t {
 				MAX_FLAG,
 };
 
+enum GPU_LIMIT : int {
+				GL_MAX_TEXTURE_SLOT = 16,
+};
+enum BATCH_LIMIT : size_t {
+				MAX_BATCH_OBJECT = 1000,
+};
+
 ////////////////////////////////////////////////////////////
 ///																				   INPUT                          ///
 ////////////////////////////////////////////////////////////

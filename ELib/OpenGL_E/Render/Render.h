@@ -2,12 +2,7 @@
 #include <epch.h>
 #include "Buffer/Buffer.h"
 
-enum GPU_LIMIT : int {
-				MAX_TEXTURE_SLOT = 16,
-};
-enum BATCH_LIMIT : size_t {
-				MAX_BATCH_OBJECT = 1000,
-};
+
 namespace GL_Graphics {
 
 				struct BatchInfo {
@@ -20,7 +15,7 @@ namespace GL_Graphics {
 				};
 
 				class RenderSystem :public ISingleton<RenderSystem> {
-								int Texture_Slot[GPU_LIMIT::MAX_TEXTURE_SLOT];
+								int Texture_Slot[GPU_LIMIT::GL_MAX_TEXTURE_SLOT];
 								glm::vec3 Clear_Color;
 								inline glm::vec3 GetClearColor() { return Clear_Color; }
 								std::vector<BatchInfo> TotalBatchedContainer;

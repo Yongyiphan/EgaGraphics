@@ -10,6 +10,7 @@ namespace Core {
 
 				struct IEvent {
 								virtual const std::string& getName() const = 0;
+								virtual ~IEvent() {}
 				};
 
 				template <typename ... Args>

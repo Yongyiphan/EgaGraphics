@@ -1,17 +1,33 @@
 #include <epch.h>
 #include "CameraController.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 
 namespace Core {
 
 				void Camera::CalculateLookAt() {
 								static glm::vec3 C_Up{ 0.f, 1.f, 0.f };
+								m_CamData.Right = glm::normalize(glm::cross(C_Up, m_CamData.Direction));
+								m_CamData.Up = glm::cross(m_CamData.Direction, m_CamData.Right);
+								m_LookAt = glm::lookAt(m_CamData.Position, m_CamData.Position + m_CamData.Front, C_Up);
+								if (!m_DefaultSet) {
+												m_DefaultCamData = m_CamData;
+												m_DefaultSet = true;
+								}
+				}
 
+				void Camera::OrthographicView() {
+
+				}
+
+				void Camera::PerspectiveView() {
+								m_ProjectionMtx = glm::perspective(glm::radians(m_CamData.m_Fov), 1.f, 0.f, 100.f);
 				}
 
 				Camera::Camera(const std::string& p_Name, glm::vec3 p_Position, float p_width, float p_height) {
 								SetName(p_Name);
-								m_Position = p_Position;
+								m_CamData.Position = p_Position;
+								m_CamData.Front = glm::vec3(0.f, 0.f, -1.f);
 								SetCameraWindow(p_width, p_height);
 				}
 
@@ -22,8 +38,13 @@ namespace Core {
 								glm::vec3 scale = 2.f / m_Dimensions;
 								m_CamWindowToNDC[0].x = scale.x;
 								m_CamWindowToNDC[1].y = scale.y;
-								m_CamWindowToNDC[2].z = scale.z;
+								m_CamWindowToNDC[2].z = 1.f;
 								m_AspectRatio = p_Width / p_Height;
+				}
+
+				void Camera::SetTarget(glm::vec3 p_target) {
+								m_CamData.Direction = glm::normalize(m_CamData.Position - p_target);
+								m_CamData.Target = p_target;
 				}
 
 				void Camera::SetMovement(ENUM_Key_Actions actions, float p_value) {
@@ -58,19 +79,25 @@ namespace Core {
 												m_CamData.m_Pitch += p_value;
 												break;
 								case ENUM_Key_Actions::ZOOM:
-												m_CamData.m_Zoom += p_value;
+												if (m_IsOrthagonal) {
+												}
+												else {
+																m_CamData.m_Fov += p_value;
+																if (m_CamData.m_Fov < 1.f) { m_CamData.m_Fov = 1.0f; }
+																if (m_CamData.m_Fov > 60.f) { m_CamData.m_Fov = 60.f; }
+												}
 												break;
 								case ENUM_Key_Actions::LEFT:
-												m_Position.x += p_value;
+												m_CamData.Position += p_value * m_CamData.Front;
 												break;
 								case ENUM_Key_Actions::RIGHT:
-												m_Position.x += p_value;
+												m_CamData.Position += p_value * m_CamData.Front;
 												break;
 								case ENUM_Key_Actions::UP:
-												m_Position.y += p_value;
+												m_CamData.Position += glm::normalize(glm::cross(m_CamData.Front, m_CamData.Up)) * p_value;
 												break;
 								case ENUM_Key_Actions::DOWN:
-												m_Position.y += p_value;
+												m_CamData.Position += glm::normalize(glm::cross(m_CamData.Front, m_CamData.Up)) * p_value;
 												break;
 								}
 
@@ -80,7 +107,8 @@ namespace Core {
 								m_KeyBindings.SetKeyBinding(Key, instructions);
 				}
 
-				void Camera::Update(const std::shared_ptr<Core::Input>& p_inputsystem, double) {
+				void Camera::Update(const std::shared_ptr<Core::Input>& p_inputsystem, double ddt) {
+								float fdt = (float)ddt;
 								m_KeyBindings.Update(p_inputsystem->GetCurrentSequence(), [&](Base_KeyMap instructions) {
 												if (instructions.CheckFlags(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::FORWARD)) {
 																E_LOG_INFO("Zoom in");
@@ -90,7 +118,34 @@ namespace Core {
 																E_LOG_INFO("Zoom out");
 																ApplyMovement(ENUM_Key_Actions::ZOOM, -m_Movement.m_ZoomSpeed);
 												}
+												if (instructions.CheckFlags(ENUM_Key_Actions::LEFT)) {
+																E_LOG_INFO("Cam Left");
+																ApplyMovement(ENUM_Key_Actions::LEFT, -m_Movement.m_MoveSpeed * fdt);
+												}
+												if (instructions.CheckFlags(ENUM_Key_Actions::RIGHT)) {
+																E_LOG_INFO("Cam Right");
+																ApplyMovement(ENUM_Key_Actions::RIGHT, m_Movement.m_MoveSpeed * fdt);
+												}
+												if (instructions.CheckFlags(ENUM_Key_Actions::UP)) {
+																E_LOG_INFO("Cam Up");
+																ApplyMovement(ENUM_Key_Actions::UP, m_Movement.m_MoveSpeed);
+												}
+												if (instructions.CheckFlags(ENUM_Key_Actions::DOWN)) {
+																E_LOG_INFO("Cam Down");
+																ApplyMovement(ENUM_Key_Actions::DOWN, -m_Movement.m_MoveSpeed);
+												}
+												if (instructions.CheckFlags(ENUM_Key_Actions::RESET)) {
+																m_CamData = m_DefaultCamData;
+												}
 												});
+
+								CalculateLookAt();
+								if (m_IsOrthagonal) {
+												OrthographicView();
+								}
+								else {
+												PerspectiveView();
+								}
 
 				}
 

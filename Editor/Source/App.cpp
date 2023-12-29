@@ -57,7 +57,7 @@ int main()
 				App->Init(Window_Width, Window_Height);
 				App->SetBackgroundColor(0.5f, 0.1f, 0.5f);
 				App->AppCamera->AddCamera(new Core::Camera(
-								"Engine", {},
+								"Engine", { 0.f, 0.f, 5.f },
 								FWidth, FHeight
 				));
 
@@ -80,11 +80,21 @@ int main()
 				TO.KeyMap.SetKeyBinding(GLFW_KEY_W, { ENUM_Key_Actions::UP });
 				TO.KeyMap.SetKeyBinding(GLFW_KEY_S, { ENUM_Key_Actions::DOWN });
 
+				App->AppCamera->GetCurrentCamera()->SetTarget({ 0.0f, 0.0f, 0.f });
 				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_Z, { ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::FORWARD });
 				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_X, { ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::BACKWARD });
+				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_LEFT, { ENUM_Key_Actions::LEFT });
+				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_RIGHT, { ENUM_Key_Actions::RIGHT });
+				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_UP, { ENUM_Key_Actions::UP });
+				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_DOWN, { ENUM_Key_Actions::DOWN });
+				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_R, { ENUM_Key_Actions::RESET });
+				App->AppCamera->GetCurrentCamera()->SetMovement(ENUM_Key_Actions::LEFT, 1.f);
+				App->AppCamera->GetCurrentCamera()->SetMovement(ENUM_Key_Actions::ZOOM, 1.f);
+
 				Core::Base_KeyMap km(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::FORWARD);
 
 				TestObject BG{};
+				BG.transformc.SetPosition({ 0.f, 0.f, 0.f });
 				BG.transformc.SetScale({ FWidth, FHeight, 1.f });
 				BG.meshc.SetMeshName("FilledQuad");
 
@@ -99,7 +109,7 @@ int main()
 								App->AppCamera->Update(App->AppInput, App->GetDeltaTime());
 								proj_view[0].x = 2.f / window_size.x;
 								proj_view[1].y = 2.f / window_size.y;
-								//proj_view = App->AppCamera->GetCurrentCamera()->GetProjectionViewMatrix();
+								proj_view = App->AppCamera->GetCurrentCamera()->GetProjectionViewMatrix();
 
 								{
 												TO.Update(App->AppInput);
