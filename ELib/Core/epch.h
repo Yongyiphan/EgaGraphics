@@ -20,6 +20,7 @@
 #endif
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #define E_API __declspec(dllimport) 
 #define unref(x) (void)x

@@ -19,6 +19,7 @@ namespace Core {
 				}
 
 				void GL_Core::Init(int width, int height) {
+								_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 								AppWindow->Init(width, height);
 								Globals_Init();
 								SetupShaders();
@@ -34,6 +35,8 @@ namespace Core {
 				}
 
 				bool GL_Core::Run() {
+								_CrtMemCheckpoint(&sOld);
+
 								AppWindow->pollEvents();
 								bool close = !AppWindow->ShouldClose();
 								StartFrame();
@@ -47,12 +50,15 @@ namespace Core {
 				}
 
 				void GL_Core::Next() {
+								_CrtMemCheckpoint(&sNew);
 								EImGui->RenderStatsTracker();
 
 								EImGui->EndFrame();
 								AppWindow->swapBuffers();
 								AppInput->Reset();
 								SetFPS_Title();
+								SetCamera_View_Title();
+								AppWindow->AddOnWindowName(FPS_title_addons + Cam_View_title_addons);
 								EndFrame();
 				}
 
@@ -70,8 +76,12 @@ namespace Core {
 
 				void GL_Core::SetFPS_Title() {
 								double fps = 1.0 / m_Deltatime;
-								std::string newtitle = AppWindow->GetWindowName() + " FPS [ " + std::to_string(fps) + " ]";
-								glfwSetWindowTitle(AppWindow->GetWindow(), newtitle.c_str());
+								FPS_title_addons = " FPS [ " + std::to_string(fps) + " ] ";
+				}
+
+				void GL_Core::SetCamera_View_Title() {
+								Cam_View_title_addons = AppCamera->GetCurrentCamera()->GetName();
+								Cam_View_title_addons += AppCamera->GetCurrentCamera()->IsOrthographic() ? " ( Orthographic ) " : " ( Perspective ) ";
 				}
 
 				void GL_Core::SetupShaders() {

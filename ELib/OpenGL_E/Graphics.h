@@ -7,7 +7,6 @@
 
 namespace GL_Graphics {
 
-
 				// Holds cache and data
 				class GraphicsManager : public ISingleton<GraphicsManager> {
 								friend ISingleton<GraphicsManager>;

@@ -36,6 +36,9 @@ namespace Core {
 
 								inline GLFWwindow* GetWindow() { return m_pWindow; }
 								inline std::string GetWindowName() { return m_WindowName; }
+								void SetWindowName(const std::string& new_windowname);
+								void AddOnWindowName(const std::string& title_addons);
+
 
 				private:
 								std::string m_WindowName{};

@@ -115,6 +115,14 @@ namespace Core {
 								glViewport(0, 0, w, h);
 				}
 
+				void GLWindow::SetWindowName(const std::string& new_windowname) {
+								glfwSetWindowTitle(m_pWindow, new_windowname.c_str());
+				}
+
+				void GLWindow::AddOnWindowName(const std::string& title_addons) {
+								glfwSetWindowTitle(m_pWindow, std::string{ m_WindowName + title_addons }.c_str());
+				}
+
 				void GLWindow::CleanUp() {
 								glfwDestroyWindow(m_pWindow);
 								glfwTerminate();

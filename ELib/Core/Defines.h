@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <csignal>
+#define _CRTDBG_MAP_ALLOC
 
 /////////////////////////////////////////////////////////
 ///                                                   ///
@@ -59,6 +60,12 @@ do{\
 ////////////////////////////////////////////////////////////
 ///																				  CAMERA                          ///
 ////////////////////////////////////////////////////////////
+#define DEFAULT_PERSPECTIVE_FOV 60.f
+#define PERSPECTIVE_FOV_UPPER_LIMIT 100.f
+#define PERSPECTIVE_FOV_LOWER_LIMIT 1.0f
+#define ORTHOGRAPHIC_ZOOM_UPPER_LIMIT 20.f
+#define ORTHOGRAPHIC_ZOOM_LOWER_LIMIT 0.1f
+
 #include "Window/GLFW_Window.h"
 #define UICast(x) static_cast<unsigned int>(x)
 #define STCast(x) static_cast<size_t>(x)
@@ -80,6 +87,15 @@ enum class ENUM_Key_Actions : size_t {
 				TOGGLE,
 				MAX_FLAG,
 };
+
+enum class KeyTriggerType {
+				CLICK,
+				HOLD,
+				CLICK_HOLD,
+};
+
+#define KEY_TRIGGER_START(keybind)for(auto&instructions : keybind.GetTriggered()){
+#define KEY_TRIGGER_END }
 
 enum GPU_LIMIT : int {
 				GL_MAX_TEXTURE_SLOT = 16,

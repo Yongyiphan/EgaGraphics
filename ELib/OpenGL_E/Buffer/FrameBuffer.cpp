@@ -59,6 +59,7 @@ namespace GL_Graphics {
 								for (auto& _attachment : m_ColorAttachment) {
 												GLCall(glDeleteTextures(1, &_attachment.m_TextureID));
 								}
+								m_ColorAttachment.clear();
 				}
 
 				void FrameBuffer::AddAttachment(Attachment _attachment) {

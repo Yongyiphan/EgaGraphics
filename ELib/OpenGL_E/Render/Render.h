@@ -35,7 +35,7 @@ namespace GL_Graphics {
 								static void Render(const BufferData&, ECS::TransformComponent*, ECS::SpriteComponent*);
 								static void Render(const BufferData&, ECS::TransformComponent*, ECS::TextComponent*);
 								// Render Framebuffer as texture
-								static void Render(BufferData, float, float, TextureID, glm::mat4 projection);
+								static void Render(BufferData, float, float, TextureID, glm::mat4 projection = glm::mat4(1.f));
 				public: // Batch Render
 								static void BatchStart();
 								static void BatchEnd();

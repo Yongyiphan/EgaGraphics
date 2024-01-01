@@ -7,6 +7,7 @@ using namespace GL_Graphics;
 #include <Vulkan_E/Core/Core.h>
 #endif
 
+
 struct TestObject {
 				Core::KeyBinding m_KeyBind;
 				ECS::TransformComponent transformc;
@@ -38,11 +39,10 @@ struct TestObject {
 								}
 				}
 
-				void Update(const std::shared_ptr<Core::Input>& p_input) {
-
-								KeyMap.Update(p_input->GetCurrentSequence(), [&](Core::Base_KeyMap l) {
-												TestMovement(l);
-												});
+				void Update() {
+								KEY_TRIGGER_START(KeyMap);
+								TestMovement(instructions);
+								KEY_TRIGGER_END;
 				}
 };
 
@@ -56,9 +56,10 @@ int main()
 				float FHeight = static_cast<float>(Window_Height);
 				App->Init(Window_Width, Window_Height);
 				App->SetBackgroundColor(0.5f, 0.1f, 0.5f);
-				App->AppCamera->AddCamera(new Core::Camera(
+				App->AppCamera->AddCamera(new Core::SampleCamera(
 								"Engine", { 0.f, 0.f, 5.f },
-								FWidth, FHeight
+								FWidth, FHeight,
+								{ 0.f, 0.f, 0.f }
 				));
 
 				GraphicsManager& GMan = GraphicsManager::GetInstance();
@@ -72,59 +73,46 @@ int main()
 				glm::mat4 proj_view(1.f);
 
 				TestObject TO{};
-				TO.transformc.SetPosition({ 0.f, 0.f, 1.f });
-				TO.transformc.SetScale({ 30.f, 30.f, 1.f });
+				TO.transformc.SetPosition({ 0.f, 0.f, 0.f });
+				TO.transformc.SetScale({ 30.f, 30.f, 0.f });
 
-				TO.KeyMap.SetKeyBinding(GLFW_KEY_A, { ENUM_Key_Actions::LEFT });
-				TO.KeyMap.SetKeyBinding(GLFW_KEY_D, { ENUM_Key_Actions::RIGHT });
-				TO.KeyMap.SetKeyBinding(GLFW_KEY_W, { ENUM_Key_Actions::UP });
-				TO.KeyMap.SetKeyBinding(GLFW_KEY_S, { ENUM_Key_Actions::DOWN });
+				TO.KeyMap.SetKeyBinding(GLFW_KEY_A, { KeyTriggerType::CLICK_HOLD, ENUM_Key_Actions::LEFT });
+				TO.KeyMap.SetKeyBinding(GLFW_KEY_D, { KeyTriggerType::CLICK_HOLD, ENUM_Key_Actions::RIGHT });
+				TO.KeyMap.SetKeyBinding(GLFW_KEY_W, { KeyTriggerType::CLICK_HOLD, ENUM_Key_Actions::UP });
+				TO.KeyMap.SetKeyBinding(GLFW_KEY_S, { KeyTriggerType::CLICK_HOLD, ENUM_Key_Actions::DOWN });
 
-				App->AppCamera->GetCurrentCamera()->SetTarget({ 0.0f, 0.0f, 0.f });
-				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_Z, { ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::FORWARD });
-				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_X, { ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::BACKWARD });
-				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_LEFT, { ENUM_Key_Actions::LEFT });
-				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_RIGHT, { ENUM_Key_Actions::RIGHT });
-				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_UP, { ENUM_Key_Actions::UP });
-				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_DOWN, { ENUM_Key_Actions::DOWN });
-				App->AppCamera->GetCurrentCamera()->SetKeyBind(GLFW_KEY_R, { ENUM_Key_Actions::RESET });
-				App->AppCamera->GetCurrentCamera()->SetMovement(ENUM_Key_Actions::LEFT, 1.f);
-				App->AppCamera->GetCurrentCamera()->SetMovement(ENUM_Key_Actions::ZOOM, 1.f);
 
-				Core::Base_KeyMap km(ENUM_Key_Actions::ZOOM, ENUM_Key_Actions::FORWARD);
 
 				TestObject BG{};
 				BG.transformc.SetPosition({ 0.f, 0.f, 0.f });
-				BG.transformc.SetScale({ FWidth, FHeight, 1.f });
+				BG.transformc.SetScale({ FWidth, FHeight, 0.f });
 				BG.meshc.SetMeshName("FilledQuad");
 
 				RenderSystem::SetClearColor(App->GetBackgroundColor());
 				while (App->Run()) {
 								auto window_size = App->AppWindow->GetDimensions();
-#define USE_FRAMEBUFFER_IMAGE
+								//#define USE_FRAMEBUFFER_IMAGE
 #ifdef USE_FRAMEBUFFER_IMAGE
 								MainBuffer.Resize(window_size.x, window_size.y);
 								FrameBuffer::Bind(MainBuffer.GetFrameBufferID());
 #endif
-								App->AppCamera->Update(App->AppInput, App->GetDeltaTime());
-								proj_view[0].x = 2.f / window_size.x;
-								proj_view[1].y = 2.f / window_size.y;
+								App->AppCamera->Update(App->GetDeltaTime());
 								proj_view = App->AppCamera->GetCurrentCamera()->GetProjectionViewMatrix();
 
 								{
-												TO.Update(App->AppInput);
+												TO.Update();
 								}
 
-								RenderSystem::BatchStart();
+								//RenderSystem::BatchStart();
 								RenderSystem::Render(*GMan.GetModel(BG.meshc.GetMeshName()).get(), &BG.transformc, proj_view);
-								RenderSystem::Render(*GMan.GetModel(TO.meshc.GetMeshName()).get(), &TO.transformc, proj_view);
-								RenderSystem::BatchEnd();
+								//RenderSystem::Render(*GMan.GetModel(TO.meshc.GetMeshName()).get(), &TO.transformc, proj_view);
+								//RenderSystem::BatchEnd();
 
 								// Require to prep for next cycle
 #ifdef USE_FRAMEBUFFER_IMAGE
 								FrameBuffer::UnBind();
 								//App->EImGui->RenderFramebuffer(MainBuffer, glm::vec2{ Window_Width, Window_Height });
-								RenderSystem::Render(*GMan.GetModel("FilledQuad").get(), FWidth, FHeight, MainBuffer.GetColorAttachment(0), proj_view);
+								RenderSystem::Render(*GMan.GetModel("FilledQuad").get(), 2.f, 2.f, MainBuffer.GetColorAttachment(0));
 #endif
 								App->Next();
 				}

@@ -7,17 +7,25 @@
 #include "Input/Input.h"
 #include "Shader/Shader.h"
 #include "Camera/CameraController.h"
+#include "Camera/Cameras.h"
 #include "Graphics.h"
 #include "ECS/ECS.h"
 
 
 namespace Core {
 
-
-
 				class GL_Core {
+				private:
+								_CrtMemState sOld{};
+								_CrtMemState sNew{};
+								_CrtMemState sDiff{};
+				private:
 								glm::vec3 m_BGColor{};
 								double m_Deltatime{};
+								std::string FPS_title_addons{};
+								std::string Cam_View_title_addons{};
+								void SetFPS_Title();
+								void SetCamera_View_Title();
 				public:
 								std::shared_ptr<GLWindow> AppWindow;
 								std::shared_ptr<Input> AppInput;
@@ -36,7 +44,6 @@ namespace Core {
 								void StartFrame();
 								void EndFrame();
 								inline double GetDeltaTime() { return m_Deltatime; }
-								void SetFPS_Title();
 				};
 
 

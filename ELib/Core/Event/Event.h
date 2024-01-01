@@ -51,7 +51,7 @@ namespace Core {
 
 				private:
 								std::map<std::string, std::vector<IEvent*>> m_EventList;
-				} static EventManager;
+				};
 
 
 
