@@ -54,6 +54,7 @@ namespace Core {
 					}\
      return retVal; \
    }()
+#define GL_CheckError Core::GLCheckError(__FILE__, __LINE__).first;
 #else
 #define GLCall( x ) [&](){\
 			x; \

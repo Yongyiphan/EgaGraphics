@@ -31,7 +31,7 @@ namespace GL_Graphics {
 
 				template<typename T>
 				inline BufferLayoutElement<T>::~BufferLayoutElement() {
-								m_Data.clear();
+								Clear();
 				}
 
 

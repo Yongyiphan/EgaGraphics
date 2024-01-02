@@ -103,10 +103,10 @@ int main()
 												TO.Update();
 								}
 
-								//RenderSystem::BatchStart();
+								RenderSystem::BatchStart();
 								RenderSystem::Render(*GMan.GetModel(BG.meshc.GetMeshName()).get(), &BG.transformc, proj_view);
-								//RenderSystem::Render(*GMan.GetModel(TO.meshc.GetMeshName()).get(), &TO.transformc, proj_view);
-								//RenderSystem::BatchEnd();
+								RenderSystem::Render(*GMan.GetModel(TO.meshc.GetMeshName()).get(), &TO.transformc, proj_view);
+								RenderSystem::BatchEnd();
 
 								// Require to prep for next cycle
 #ifdef USE_FRAMEBUFFER_IMAGE

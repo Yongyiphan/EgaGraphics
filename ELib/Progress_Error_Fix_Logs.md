@@ -42,9 +42,10 @@ std::function<void(Args...)>
 * (11/12/23) [Buffer Creation](#buffer-creation) : Dynamic Vertex Array buffer creation
 * (18/12/23) [Render](#render)      : Able to render basic shapes;
 * (24/12/23) [Key Mapping](#key-mapping) : Implemented KeyBinding, potential remapping of keys to actions
+* (01/01/24) [Camera](#camera) : Orthographic and perspective view
 
-<a id="buffer-creation"></a>
-## Buffer Creation
+## Buffer Creation 
+[back to t.o.c](#progress-log)
 In: Buffer.h, Buffer.cpp, Buffer.inl
 * Able to Create buffer, with custom vertex array layout dynamically.
 * Using template specialization of a member function to specify data specs of each vertex array attribute
@@ -60,14 +61,14 @@ BD.ConstructIndexBuffer(idx_vtx);
 ```
 
 
-<a id="render"></a>
 ## Render 
+[back to t.o.c](#progress-log)
 In: Model.h, Model.cpp
 Implements model coordinates from [-1, 1] dimensions. Creates BufferData class objects
 Implemented Models: Point, Line, Hollow Quad, Filled Quad, Hollow Circle, Filled Circle
 
-<a id="key-mapping"></a>
-## Key Mapping
+## Key Mapping 
+[back to t.o.c](#progress-log)
 In: Defines.h, Input.h, Input.cpp (e.g in CameraController.cpp)
 Implements using enum flags as actions tied to a key / mouse input.
 Flags can be combined for specific configurations / implementation.
@@ -109,14 +110,20 @@ m_KeyBindings.Update(p_inputsystem->GetCurrentSequence(), [](Base_KeyMap instruc
     });
 ```
 
+## Camera 
+[back to t.o.c](#progress-log)
+In CameraController.h, CameraController.cpp
+Uses [Keybindings](#key-mapping) for controls.
+Able to toggle between orthographic and perspective projection view. 
+Camera Movement (4 directions along x, y axis), zoom (z axis) implemented.
+
 
 
 # Difficulties
 ### Feature: Buffer Layout Element Specialization for Different Types
-
 * Vec2, Vec3, Vec4, Mat3, Mat4, float, int, unsigned short
 
-#### Implementation
+### Implementation
 
 * Template specialize member function that reassigns member varaiables instead of constructor
 
@@ -128,6 +135,7 @@ template <>
 Buffer<float>::GetSpecs(){}
 ```
 
+## Error or Issues Faced:
 ### Error: Buffer Multiple defnitions
 #### Fix: (12/12/2023)
 Somehow "inline" is necessary before very defnition
@@ -135,3 +143,7 @@ Somehow "inline" is necessary before very defnition
 ### Error: No Definition Overload (13/12/2023)
 ##### Potential fix:
 Check if <T> is the same type as std::vector<T>
+
+### Issue: Increasing process memory from vs2022 diagnostic tools (02/01/24)
+##### Potential fix:
+Changed index buffer creation order, used GL_STATIC_DRAW

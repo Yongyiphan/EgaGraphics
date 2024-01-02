@@ -8,7 +8,7 @@
 
 namespace GL_Graphics {
 
-				void RenderSystem::Render(BufferData BD, ECS::TransformComponent* transform, glm::mat4 projection) {
+				void RenderSystem::Render(const BufferData& BD, ECS::TransformComponent* transform, glm::mat4 projection) {
 								GLBuffer::BufferID BufferID = BufferSystem::CreateGLBuffer(BD);
 								auto& Shader = ShaderManager::GetInstance();
 								Shader.Use("SingleRender");
@@ -21,6 +21,7 @@ namespace GL_Graphics {
 								Shader.SetUniform1i("TextureFlag", 0);
 								Shader.SetUniform1i("SingleTextureFlag", 0);
 								GL_Graphics::DrawElementCall(BD.GetPrimitive(), (GLsizei)BD.GetIndexBuffer()->GetElementCount(), GL_UNSIGNED_SHORT, NULL);
+								//GL_Graphics::DrawArrayCall(BD.GetPrimitive(), 0, 6);
 
 								BufferSystem::UnBind();
 								Shader.UnUse();

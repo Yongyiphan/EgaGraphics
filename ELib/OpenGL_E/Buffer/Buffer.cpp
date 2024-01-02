@@ -49,14 +49,18 @@ namespace GL_Graphics {
 												GLCall(glDeleteBuffers(1, &pboid));
 												pboid = 0;
 								}
+								if (glIsBuffer(eboid) == GL_TRUE) {
+												GLCall(glDeleteBuffers(1, &eboid));
+												eboid = 0;
+								}
 				}
 
 				void BufferSystem::Bind(GL_ID p_ID) {
-								GLCall(glBindVertexArray(p_ID));
+								glBindVertexArray(p_ID);
 				}
 
 				void BufferSystem::UnBind() {
-								GLCall(glBindVertexArray(0));
+								glBindVertexArray(0);
 				}
 
 
@@ -68,37 +72,41 @@ namespace GL_Graphics {
 								success = GLCall(glCreateVertexArrays(1, &NID.vaoid));
 								if (!success || BD.GetTotalSize() == 0 || NID.vboid == 0) {
 												NID.Completed = false;
+												E_LOG_WARN("Buffer is empty");
 												DeleteGLBuffer(NID);
 												return NID;
 								}
-								success = GLCall(glNamedBufferStorage(NID.vboid, BD.GetTotalSize(), nullptr, GL_DYNAMIC_STORAGE_BIT));
+								glNamedBufferStorage(NID.vboid, BD.GetTotalSize(), nullptr, GL_DYNAMIC_STORAGE_BIT);
+
+								if (auto idx = BD.GetIndexBuffer()) {
+												success = BufferManager.HandleIndexBuffer(NID, idx);
+								}
 								for (auto ele : BD.GetLayoutData()) {
 												if (ele->IsMatrixTyped()) {
 																success = BufferManager.HandleMatrixVAElement(NID, ele);
 																continue;
 												}
-												success = GLCall(glNamedBufferSubData(NID.vboid, ele->GetOffset(), ele->GetTotalDataSize(), ele->GetRawData()));
-												success = GLCall(glEnableVertexArrayAttrib(NID.vaoid, ele->GetDataPos()));
-												success = GLCall(glVertexArrayVertexBuffer(NID.vaoid, ele->GetDataPos(), NID.vboid, ele->GetOffset(), ele->GetDataSize()));
-												success = GLCall(glVertexArrayAttribFormat(NID.vaoid, ele->GetDataPos(), ele->GetSubElementCount(), ele->GetGL_Type(), GL_FALSE, 0));
-												success = GLCall(glVertexArrayAttribBinding(NID.vaoid, ele->GetDataPos(), ele->GetDataPos()));
+												glNamedBufferSubData(NID.vboid, ele->GetOffset(), ele->GetTotalDataSize(), ele->GetRawData());
+												glEnableVertexArrayAttrib(NID.vaoid, ele->GetDataPos());
+												glVertexArrayVertexBuffer(NID.vaoid, ele->GetDataPos(), NID.vboid, ele->GetOffset(), ele->GetDataSize());
+												glVertexArrayAttribFormat(NID.vaoid, ele->GetDataPos(), ele->GetSubElementCount(), ele->GetGL_Type(), GL_FALSE, 0);
+												glVertexArrayAttribBinding(NID.vaoid, ele->GetDataPos(), ele->GetDataPos());
 												if (ele->IsInstanced()) {
-																success = GLCall(glVertexArrayBindingDivisor(NID.vaoid, ele->GetDataPos(), 1));
+																glVertexArrayBindingDivisor(NID.vaoid, ele->GetDataPos(), 1);
 												}
+												success = GL_CheckError;
 												if (!success) {
 																goto Combust;
 												}
 								}
 
-								if (auto idx = BD.GetIndexBuffer()) {
-												success = BufferManager.HandleIndexBuffer(NID, idx);
-								}
 				Combust:
 								if (!success) {
 												NID.Completed = false;
 												DeleteGLBuffer(NID);
 								}
-
+								glBindBuffer(GL_ARRAY_BUFFER, 0);
+								glBindVertexArray(0);
 
 								return NID;
 				}
@@ -111,30 +119,29 @@ namespace GL_Graphics {
 								GLCall(glDeleteBuffers(1, &IDs.eboid));
 				}
 
-				bool BufferSystem::HandleMatrixVAElement(GLBuffer::BufferID NID, const std::shared_ptr<ILayoutElement>& ele) {
+				bool BufferSystem::HandleMatrixVAElement(GLBuffer::BufferID& NID, const std::shared_ptr<ILayoutElement>& ele) {
 								bool success = true;
 								for (GLint _i{ 0 }, i{ ele->GetDataPos() }; success && _i < ele->GetDimension(); i++, _i++) {
-												success = GLCall(glEnableVertexArrayAttrib(NID.vaoid, i));
-												success = GLCall(
-																glVertexAttribPointer(
-																				i, ele->GetDimension(),
-																				ele->GetGL_Type(), GL_FALSE, ele->GetDataSize(),
-																				(void*)(ele->GetOffset() + (_i * ele->GetSubSubDataSize()))));
+												glEnableVertexArrayAttrib(NID.vaoid, i);
+												glVertexAttribPointer(
+																i, ele->GetDimension(),
+																ele->GetGL_Type(), GL_FALSE, ele->GetDataSize(),
+																(void*)(ele->GetOffset() + (_i * ele->GetSubSubDataSize())));
 												if (ele->IsInstanced()) {
-																success = GLCall(glVertexArrayBindingDivisor(NID.vaoid, i, 1));
+																glVertexArrayBindingDivisor(NID.vaoid, i, 1);
 												}
+												success = GL_CheckError;
 								}
-								success = GLCall(glNamedBufferSubData(NID.vboid, ele->GetOffset(), ele->GetTotalDataSize(), ele->GetRawData()));
-								return success;
+								glNamedBufferSubData(NID.vboid, ele->GetOffset(), ele->GetTotalDataSize(), ele->GetRawData());
+								return GL_CheckError;
 				}
 
-				bool BufferSystem::HandleIndexBuffer(GLBuffer::BufferID NID, const std::shared_ptr<BufferLayoutElement<index_type>>& idx) {
-								GL_ID ebo{};
-								bool success = true;
-								success = GLCall(glCreateBuffers(1, &ebo));
-								success = GLCall(glNamedBufferStorage(ebo, idx->GetTotalDataSize(), idx->GetRawData(), GL_DYNAMIC_STORAGE_BIT));
-								success = GLCall(glVertexArrayElementBuffer(NID.vaoid, ebo));
-								NID.eboid = ebo;
-								return success;
+				bool BufferSystem::HandleIndexBuffer(GLBuffer::BufferID& NID, const std::shared_ptr<BufferLayoutElement<index_type>>& idx) {
+								glCreateBuffers(1, &NID.eboid);
+								glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NID.eboid);
+								//glNamedBufferStorage(NID.eboid, idx->GetTotalDataSize(), idx->GetRawData(), GL_DYNAMIC_STORAGE_BIT);
+								glBufferData(GL_ELEMENT_ARRAY_BUFFER, idx->GetTotalDataSize(), idx->GetRawData(), GL_STATIC_DRAW);
+								glVertexArrayElementBuffer(NID.vaoid, NID.eboid);
+								return GL_CheckError;
 				}
 }

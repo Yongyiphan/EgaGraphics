@@ -38,8 +38,8 @@ namespace GL_Graphics {
 				public:
 								// Related to typename T
 								// Required Override
-								virtual size_t GetElementCount() = 0;
-								virtual size_t GetTotalDataSize() = 0;
+								virtual size_t GetElementCount() const = 0;
+								virtual size_t GetTotalDataSize() const = 0;
 								virtual void Clear() = 0;
 								virtual ~ILayoutElement() {};
 								virtual void* GetRawData() = 0;
@@ -55,11 +55,11 @@ namespace GL_Graphics {
 								BufferLayoutElement(const std::string& p_name, std::vector<T> rhs, bool p_IsInstanced = false, size_t reserve = 0);
 								~BufferLayoutElement();
 
-								inline virtual size_t GetElementCount() override {
+								inline virtual size_t GetElementCount() const override {
 												return m_Data.size();
 								}
 
-								inline virtual size_t GetTotalDataSize() override {
+								inline virtual size_t GetTotalDataSize() const override {
 												return m_Data.size() * m_DataSize;
 								}
 								virtual void Clear() override;
@@ -71,19 +71,23 @@ namespace GL_Graphics {
 
 				class BufferData {
 								std::vector<std::shared_ptr<ILayoutElement>>m_Data;
-								std::shared_ptr<BufferLayoutElement<index_type>> m_IdxBuffer;
+								std::shared_ptr<BufferLayoutElement<index_type>> m_IdxBuffer{};
 								size_t m_TotalSize{ 0 };
 								GLenum m_Primitive{ GL_LINE_STRIP };
 				public:
 								BufferData() {}
-								~BufferData() {};
+								~BufferData() {
+												m_TotalSize = 0;
+												m_Data.clear(); m_IdxBuffer.reset();
+								}
 
 
 								void Resize();
+								inline void Resize() const { Resize(); }
 								void Clear();
 								inline GLenum GetPrimitive() const { return m_Primitive; }
 								inline void SetPrimitive(GLenum p_primitive) { m_Primitive = p_primitive; }
-								inline size_t GetTotalSize() { return m_TotalSize; }
+								inline size_t GetTotalSize() const { return m_TotalSize; }
 								inline std::vector<std::shared_ptr<ILayoutElement>>& GetLayoutData() { return m_Data; }
 
 								template <typename T, typename... Args>
@@ -116,6 +120,14 @@ namespace GL_Graphics {
 												}
 												return nullptr;
 								}
+								template <typename T>
+								std::shared_ptr<BufferLayoutElement<T>> GetBufferElement(const std::string& p_name) const {
+												return this->GetBufferElement<T>(p_name);
+								}
+
+								inline std::shared_ptr<BufferLayoutElement<index_type>> GetIndexBuffer() const {
+												return m_IdxBuffer;
+								}
 
 								inline std::shared_ptr<BufferLayoutElement<index_type>> GetIndexBuffer() {
 												return m_IdxBuffer;
@@ -127,19 +139,19 @@ namespace GL_Graphics {
 
 				public:
 								struct BufferID {
-												GL_ID vaoid, vboid, pboid;
-												GL_ID eboid;
+												GL_ID vaoid{}, vboid{}, pboid{};
+												GL_ID eboid{};
 												bool Completed{ false };
 												void Reset();
-								}ID;
+								}ID{};
 								BufferData m_BufferData;
 				};
 
 
 				class BufferSystem {
 								//Handles Matrix typed Vertex Array element
-								bool HandleMatrixVAElement(GLBuffer::BufferID, const std::shared_ptr<ILayoutElement>&);
-								bool HandleIndexBuffer(GLBuffer::BufferID, const std::shared_ptr<BufferLayoutElement<index_type>>&);
+								bool HandleMatrixVAElement(GLBuffer::BufferID&, const std::shared_ptr<ILayoutElement>&);
+								bool HandleIndexBuffer(GLBuffer::BufferID&, const std::shared_ptr<BufferLayoutElement<index_type>>&);
 				public:
 								static GLBuffer::BufferID CreateGLBuffer(BufferData);
 								static void DeleteGLBuffer(GLBuffer::BufferID);

@@ -31,7 +31,7 @@ namespace GL_Graphics {
 								///                                                      ///
 								////////////////////////////////////////////////////////////
 				public:
-								static void Render(BufferData, ECS::TransformComponent*, glm::mat4 projection);
+								static void Render(const BufferData&, ECS::TransformComponent*, glm::mat4 projection);
 								static void Render(const BufferData&, ECS::TransformComponent*, ECS::SpriteComponent*);
 								static void Render(const BufferData&, ECS::TransformComponent*, ECS::TextComponent*);
 								// Render Framebuffer as texture
