@@ -77,7 +77,6 @@ namespace GL_Graphics {
 												return NID;
 								}
 								glNamedBufferStorage(NID.vboid, BD.GetTotalSize(), nullptr, GL_DYNAMIC_STORAGE_BIT);
-
 								if (auto idx = BD.GetIndexBuffer()) {
 												success = BufferManager.HandleIndexBuffer(NID, idx);
 								}

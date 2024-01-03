@@ -44,7 +44,9 @@ includedirs {
 	IncludeDir.glfw,
 	IncludeDir.glew,
 	IncludeDir.glm,
-	IncludeDir.imgui
+	IncludeDir.imgui,
+	IncludeDir.stb_image,
+	IncludeDir.freetype,
 }
 
 

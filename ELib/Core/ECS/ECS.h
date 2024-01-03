@@ -61,6 +61,8 @@ namespace ECS {
 
 				class MeshComponent : public virtual Component {
 								std::string m_MeshName;
+								glm::vec3 m_Color;
+								bool m_IsColorSet{ false };
 				public:
 								MeshComponent();
 								MeshComponent(const std::string& meshname);
@@ -68,5 +70,13 @@ namespace ECS {
 
 								inline std::string GetMeshName() { return m_MeshName; }
 								inline void SetMeshName(const std::string& p_MeshName) { m_MeshName = p_MeshName; }
+								inline bool IsColorSet() { return m_IsColorSet; }
+								inline void SetColor(float r, float g, float b) {
+												m_Color.r = r;
+												m_Color.g = g;
+												m_Color.b = b;
+												m_IsColorSet = true;
+								}
+								inline glm::vec3 GetColor() { return m_IsColorSet ? m_Color : glm::vec3{ 1.f, 1.f, 1.f }; }
 				};
 }

@@ -7,23 +7,43 @@ namespace GL_Graphics {
 
 				struct BatchInfo {
 								bool IsFilled{ false };
+								size_t TotalModelCounter;
 
 								// Sort by primitive;
 								std::map<GLenum, BufferData> m_Data;
-								void Allocate();
-								void Reset();
+								std::map<GLenum, size_t> batch_object_counter;
+								void Allocate(GLenum, size_t model_pos_vtx_count, size_t model_idx_vtx_count = DEFAULT_CIRCLE_MODEL_SPLICES + 1);
+								void Reset(bool forced = false);
+								bool CheckFilled();
 				};
 
 				class RenderSystem :public ISingleton<RenderSystem> {
-								int Texture_Slot[GPU_LIMIT::GL_MAX_TEXTURE_SLOT];
 								glm::vec3 Clear_Color;
 								inline glm::vec3 GetClearColor() { return Clear_Color; }
-								std::vector<BatchInfo> TotalBatchedContainer;
+
+								////////////////////////////////////////////////////////////
+								///                                                      ///
+								///																 BATCH RENDER FUNCTIONS														 ///
+								///                                                      ///
+								////////////////////////////////////////////////////////////
+				private:
+								int Texture_Slot[GPU_LIMIT::GL_MAX_TEXTURE_SLOT];
+								size_t LatestTextureSlot{};
+								std::map<int, std::unique_ptr<BatchInfo>> TotalBatchedContainer;
+								glm::vec3 m_DebugColor{ 0.2f, 1.f, 0.2f };
+								bool m_DebugFlag{ false };
+								void BatchFlush(bool forced = false);
+								void BatchNew(int Layer, ECS::MeshComponent*);
 				public:
-								void BatchFlush();
-								void BatchNew();
 								int AddTextureToSlot(TextureID);
 								void ResetTextureSlotArray();
+								void SetDebugColor(float r, float g, float b);
+								inline void ToggleDebug() { m_DebugFlag = m_DebugFlag ? false : true; }
+				public: // Batch Render
+								static void BatchStart();
+								static void BatchEnd();
+								static void Submit();
+								static void Submit(int Layer, ECS::MeshComponent*, ECS::TransformComponent*, ECS::SpriteComponent* = nullptr);
 
 								////////////////////////////////////////////////////////////
 								///                                                      ///
@@ -36,10 +56,6 @@ namespace GL_Graphics {
 								static void Render(const BufferData&, ECS::TransformComponent*, ECS::TextComponent*);
 								// Render Framebuffer as texture
 								static void Render(BufferData, float, float, TextureID, glm::mat4 projection = glm::mat4(1.f));
-				public: // Batch Render
-								static void BatchStart();
-								static void BatchEnd();
-								static void Submit();
 				public:
 								static void SetClearColor(float r, float g, float b);
 								static void SetClearColor(glm::vec3 clr);

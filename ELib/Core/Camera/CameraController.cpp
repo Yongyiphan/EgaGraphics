@@ -118,6 +118,8 @@ namespace Core {
 				void Camera::ApplyMovement(ENUM_Key_Actions actions, float p_value) {
 								const float nearThreshold = 0.5f; // Threshold to start slowing down zoom
 								const float farThreshold = 0.9f; // Threshold to cap zoom increase
+								unref(nearThreshold);
+								unref(farThreshold);
 								switch (actions) {
 								case ENUM_Key_Actions::ROLL:
 												m_CamData.m_Roll += p_value;

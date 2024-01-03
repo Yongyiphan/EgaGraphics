@@ -10,21 +10,25 @@ filter("system:windows")
 buildoptions({ "/EHsc", "/Zc:preprocessor", "/Zc:__cplusplus" })
 
 -- Relative to sln.dir
-IncludeDir          = {}
-IncludeDir["glfw"]  = "%{wks.location}/Vendor/Dependencies/glfw-3.3.8.bin.WIN64/include"
-IncludeDir["glew"]  = "%{wks.location}/Vendor/Dependencies/glew-2.2.0/include"
-IncludeDir["glm"]   = "%{wks.location}/Vendor/Dependencies/glm-0.9.9.8/glm"
-IncludeDir["imgui"] = "%{wks.location}/Vendor/Dependencies/imgui"
+IncludeDir              = {}
+IncludeDir["glfw"]      = "%{wks.location}/Vendor/Dependencies/glfw-3.3.8.bin.WIN64/include"
+IncludeDir["glew"]      = "%{wks.location}/Vendor/Dependencies/glew-2.2.0/include"
+IncludeDir["glm"]       = "%{wks.location}/Vendor/Dependencies/glm-0.9.9.8/glm"
+IncludeDir["imgui"]     = "%{wks.location}/Vendor/Dependencies/imgui"
+IncludeDir["stb_image"] = "%{wks.location}/Vendor/Dependencies/stb-master"
+IncludeDir["freetype"]  = "%{wks.location}/Vendor/Dependencies/freetype-windows-binaries-2.13.1/include"
 
 --Relative to sln.dir
-LibDir              = {}
-LibDir["glfw"]      = "%{wks.location}/Vendor/Dependencies/glfw-3.3.8.bin.WIN64/lib-vc2022"
-LibDir["glew"]      = "%{wks.location}/Vendor/Dependencies/glew-2.2.0/lib/Release/x64"
+LibDir                  = {}
+LibDir["glfw"]          = "%{wks.location}/Vendor/Dependencies/glfw-3.3.8.bin.WIN64/lib-vc2022"
+LibDir["glew"]          = "%{wks.location}/Vendor/Dependencies/glew-2.2.0/lib/x64"
+LibDir["freetype"]      = "%{wks.location}/Vendor/Dependencies/freetype-windows-binaries-2.13.1/release_static/win64"
 
-AssetsDir           = {}
-PostLibDir          = {}
-PostLibDir["glfw"]  = "%{wks.location}Vendor/Dependencies/glfw-3.3.8.bin.WIN64/lib-vc2022"
-PostLibDir["glew"]  = "%{wks.location}Vendor/Dependencies/glew-2.2.0/bin/Release/x64"
+AssetsDir               = {}
+PostLibDir              = {}
+PostLibDir["glfw"]      = "%{wks.location}Vendor/Dependencies/glfw-3.3.8.bin.WIN64/lib-vc2022"
+PostLibDir["glew"]      = "%{wks.location}Vendor/Dependencies/glew-2.2.0/bin/x64"
+PostLibDir["freetype"]  = "%{wks.location}Vendor/Dependencies/freetype-windows-binaries-2.13.1/release_dll/win64"
 
 defines {
 	"ELIB_OPENGL"

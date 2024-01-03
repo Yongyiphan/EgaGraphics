@@ -55,6 +55,8 @@ namespace GL_Graphics {
 								BufferLayoutElement(const std::string& p_name, std::vector<T> rhs, bool p_IsInstanced = false, size_t reserve = 0);
 								~BufferLayoutElement();
 
+				public:
+								// Accessors for ILayoutElement
 								inline virtual size_t GetElementCount() const override {
 												return m_Data.size();
 								}
@@ -63,9 +65,10 @@ namespace GL_Graphics {
 												return m_Data.size() * m_DataSize;
 								}
 								virtual void Clear() override;
-				public:
-								// Helpers for Buffer Creation
 								inline void* GetRawData() override { return m_Data.data(); }
+				public:
+								// Accessors for BufferLayoutElement<T>
+								inline std::vector<T>& GetData() { return m_Data; }
 
 				};
 
@@ -76,6 +79,7 @@ namespace GL_Graphics {
 								GLenum m_Primitive{ GL_LINE_STRIP };
 				public:
 								BufferData() {}
+								BufferData(GLenum primitive) : m_Primitive(primitive) {}
 								~BufferData() {
 												m_TotalSize = 0;
 												m_Data.clear(); m_IdxBuffer.reset();
@@ -102,9 +106,9 @@ namespace GL_Graphics {
 												return new_element;
 								}
 
-
-								std::shared_ptr<BufferLayoutElement<index_type>> ConstructIndexBuffer(std::vector<index_type> p_data) {
-												m_IdxBuffer = std::make_shared<BufferLayoutElement<index_type>>("idx", p_data);
+								template <typename ...Args>
+								std::shared_ptr<BufferLayoutElement<index_type>> ConstructIndexBuffer(std::vector<index_type> p_data, Args&&...args) {
+												m_IdxBuffer = std::make_shared<BufferLayoutElement<index_type>>("idx", p_data, std::forward<Args>(args)...);
 												return m_IdxBuffer;
 								}
 
@@ -122,7 +126,14 @@ namespace GL_Graphics {
 								}
 								template <typename T>
 								std::shared_ptr<BufferLayoutElement<T>> GetBufferElement(const std::string& p_name) const {
-												return this->GetBufferElement<T>(p_name);
+												for (auto& element : m_Data) {
+																if (std::shared_ptr<BufferLayoutElement<T>> converted = std::dynamic_pointer_cast<BufferLayoutElement<T>>(element)) {
+																				if (converted->GetName() == p_name) {
+																								return converted;
+																				}
+																}
+												}
+												return nullptr;
 								}
 
 								inline std::shared_ptr<BufferLayoutElement<index_type>> GetIndexBuffer() const {

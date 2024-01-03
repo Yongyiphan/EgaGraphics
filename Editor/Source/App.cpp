@@ -91,7 +91,7 @@ int main()
 				RenderSystem::SetClearColor(App->GetBackgroundColor());
 				while (App->Run()) {
 								auto window_size = App->AppWindow->GetDimensions();
-								//#define USE_FRAMEBUFFER_IMAGE
+#define USE_FRAMEBUFFER_IMAGE
 #ifdef USE_FRAMEBUFFER_IMAGE
 								MainBuffer.Resize(window_size.x, window_size.y);
 								FrameBuffer::Bind(MainBuffer.GetFrameBufferID());
@@ -104,8 +104,9 @@ int main()
 								}
 
 								RenderSystem::BatchStart();
-								RenderSystem::Render(*GMan.GetModel(BG.meshc.GetMeshName()).get(), &BG.transformc, proj_view);
-								RenderSystem::Render(*GMan.GetModel(TO.meshc.GetMeshName()).get(), &TO.transformc, proj_view);
+								RenderSystem::Submit(0, &BG.meshc, &BG.transformc);
+								//RenderSystem::Render(*GMan.GetModel(BG.meshc.GetMeshName()).get(), &BG.transformc, proj_view);
+								//RenderSystem::Render(*GMan.GetModel(TO.meshc.GetMeshName()).get(), &TO.transformc, proj_view);
 								RenderSystem::BatchEnd();
 
 								// Require to prep for next cycle

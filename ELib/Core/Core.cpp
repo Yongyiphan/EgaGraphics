@@ -104,8 +104,8 @@ namespace Core {
 								auto& GM = GL_Graphics::GraphicsManager::GetInstance();
 								GM.StoreModel("FilledQuad", GL_Graphics::CreateQuadModel());
 								GM.StoreModel("HollowQuad", GL_Graphics::CreateQuadModel(true));
-								GM.StoreModel("FilledCircle", GL_Graphics::CreateCircleModel(36));
-								GM.StoreModel("HollowCircle", GL_Graphics::CreateCircleModel(36, true));
+								GM.StoreModel("FilledCircle", GL_Graphics::CreateCircleModel(DEFAULT_CIRCLE_MODEL_SPLICES));
+								GM.StoreModel("HollowCircle", GL_Graphics::CreateCircleModel(DEFAULT_CIRCLE_MODEL_SPLICES, true));
 								GM.StoreModel("Points", GL_Graphics::CreatePointModel());
 								GM.StoreModel("Lines", GL_Graphics::CreateLineModel());
 				}

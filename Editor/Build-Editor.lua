@@ -21,12 +21,15 @@ externalincludedirs {
 	IncludeDir.glew,
 	IncludeDir.glm,
 	IncludeDir.imgui,
+	IncludeDir.stb_image,
+	IncludeDir.freetype,
 }
 
 libdirs
 {
 	LibDir.glfw,
 	LibDir.glew,
+	LibDir.freetype,
 }
 
 links {
@@ -59,6 +62,7 @@ postbuildcommands {
 	CreatePostBuildCommand("{COPYDIR}", AssetsDir.GL_Core.dir, AssetsDir.GL_Core.name, true),
 	CreatePostBuildCommand("{COPYFILE}", PostLibDir.glew, "glew32.dll", false),
 	CreatePostBuildCommand("{COPYFILE}", PostLibDir.glfw, "glfw3.dll", false),
+	CreatePostBuildCommand("{COPYFILE}", PostLibDir.freetype, "freetype.dll", false),
 }
 
 linkoptions { '/NODEFAULTLIB:LIBCMTD' }
