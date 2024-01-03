@@ -12,8 +12,6 @@ namespace Core {
 
 				GL_Core::GL_Core() {
 								AppWindow = std::make_shared<Core::GLWindow>();
-								AppInput = std::make_shared<Core::Input>();
-								AppCamera = std::make_shared<Core::CameraManager>();
 								EImGui = std::make_shared<Core::EImGui>();
 
 				}
@@ -43,7 +41,7 @@ namespace Core {
 								EImGui->StartFrame();
 								GL_Graphics::RenderSystem::Clear();
 								// Very Defaulted base key inputs. redundant in main loop
-								if (AppInput->IsKeyPress(GLFW_KEY_ESCAPE)) {
+								if (Core::Input::GetInstance().IsKeyPress(GLFW_KEY_ESCAPE)) {
 												AppWindow->CloseWindow();
 								}
 								return close;
@@ -55,7 +53,7 @@ namespace Core {
 
 								EImGui->EndFrame();
 								AppWindow->swapBuffers();
-								AppInput->Reset();
+								Core::Input::Reset();
 								SetFPS_Title();
 								SetCamera_View_Title();
 								AppWindow->AddOnWindowName(FPS_title_addons + Cam_View_title_addons);
@@ -80,8 +78,8 @@ namespace Core {
 				}
 
 				void GL_Core::SetCamera_View_Title() {
-								Cam_View_title_addons = AppCamera->GetCurrentCamera()->GetName();
-								Cam_View_title_addons += AppCamera->GetCurrentCamera()->IsOrthographic() ? " ( Orthographic ) " : " ( Perspective ) ";
+								Cam_View_title_addons = Core::CameraManager::GetCurrentCamera()->GetName();
+								Cam_View_title_addons += Core::CameraManager::GetCurrentCamera()->IsOrthographic() ? " ( Orthographic ) " : " ( Perspective ) ";
 				}
 
 				void GL_Core::SetupShaders() {
@@ -98,6 +96,7 @@ namespace Core {
 																GL_Graphics::ShaderType::VERT_SHADER,
 																GL_Graphics::ShaderType::FRAG_SHADER,
 												}));
+								GLShader.AddShaderGroup(GL_Graphics::ShaderGroup("Batch"));
 				}
 
 				void GL_Core::SetupModels() {

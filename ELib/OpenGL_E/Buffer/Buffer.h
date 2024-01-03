@@ -88,7 +88,7 @@ namespace GL_Graphics {
 
 								void Resize();
 								inline void Resize() const { Resize(); }
-								void Clear();
+								void Clear(bool full = true);
 								inline GLenum GetPrimitive() const { return m_Primitive; }
 								inline void SetPrimitive(GLenum p_primitive) { m_Primitive = p_primitive; }
 								inline size_t GetTotalSize() const { return m_TotalSize; }

@@ -13,7 +13,7 @@ namespace GL_Graphics {
 								std::map<GLenum, BufferData> m_Data;
 								std::map<GLenum, size_t> batch_object_counter;
 								void Allocate(GLenum, size_t model_pos_vtx_count, size_t model_idx_vtx_count = DEFAULT_CIRCLE_MODEL_SPLICES + 1);
-								void Reset(bool forced = false);
+								void Reset();
 								bool CheckFilled();
 				};
 
@@ -29,13 +29,22 @@ namespace GL_Graphics {
 				private:
 								int Texture_Slot[GPU_LIMIT::GL_MAX_TEXTURE_SLOT];
 								size_t LatestTextureSlot{};
-								std::map<int, std::unique_ptr<BatchInfo>> TotalBatchedContainer;
+								std::map<int, std::unique_ptr<BatchInfo>> DefaultBatchedContainer;
+								std::vector<BatchInfo> PenBatchContainer;
+				private:
+								std::map<GLenum, BatchInfo> DebugBatchContainer;
 								glm::vec3 m_DebugColor{ 0.2f, 1.f, 0.2f };
 								bool m_DebugFlag{ false };
-								void BatchFlush(bool forced = false);
+				private:
+								void BatchFlush(bool full = false);
 								void BatchNew(int Layer, ECS::MeshComponent*);
+								void BatchReset(bool full = false);
+								void BatchRenderDebug();
+								void BatchRenderPen();
 				public:
-								int AddTextureToSlot(TextureID);
+								size_t AddTextureToSlot(TextureID);
+								bool HasTextureSlot();
+								bool HasBatchSlot();
 								void ResetTextureSlotArray();
 								void SetDebugColor(float r, float g, float b);
 								inline void ToggleDebug() { m_DebugFlag = m_DebugFlag ? false : true; }
@@ -47,7 +56,7 @@ namespace GL_Graphics {
 
 								////////////////////////////////////////////////////////////
 								///                                                      ///
-								///																	 STATIC FUNCTIONS																			 ///
+								///												STATIC SINGLE RENDER FUNCTIONS											 ///
 								///                                                      ///
 								////////////////////////////////////////////////////////////
 				public:

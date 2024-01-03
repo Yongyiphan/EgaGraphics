@@ -56,7 +56,7 @@ int main()
 				float FHeight = static_cast<float>(Window_Height);
 				App->Init(Window_Width, Window_Height);
 				App->SetBackgroundColor(0.5f, 0.1f, 0.5f);
-				App->AppCamera->AddCamera(new Core::SampleCamera(
+				Core::CameraManager::GetInstance().AddCamera(new Core::SampleCamera(
 								"Engine", { 0.f, 0.f, 5.f },
 								FWidth, FHeight,
 								{ 0.f, 0.f, 0.f }
@@ -96,8 +96,7 @@ int main()
 								MainBuffer.Resize(window_size.x, window_size.y);
 								FrameBuffer::Bind(MainBuffer.GetFrameBufferID());
 #endif
-								App->AppCamera->Update(App->GetDeltaTime());
-								proj_view = App->AppCamera->GetCurrentCamera()->GetProjectionViewMatrix();
+								Core::CameraManager::Update(App->GetDeltaTime());
 
 								{
 												TO.Update();
@@ -105,6 +104,7 @@ int main()
 
 								RenderSystem::BatchStart();
 								RenderSystem::Submit(0, &BG.meshc, &BG.transformc);
+								RenderSystem::Submit(0, &TO.meshc, &TO.transformc);
 								//RenderSystem::Render(*GMan.GetModel(BG.meshc.GetMeshName()).get(), &BG.transformc, proj_view);
 								//RenderSystem::Render(*GMan.GetModel(TO.meshc.GetMeshName()).get(), &TO.transformc, proj_view);
 								RenderSystem::BatchEnd();

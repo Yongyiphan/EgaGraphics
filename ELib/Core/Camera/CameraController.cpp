@@ -214,6 +214,7 @@ namespace Core {
 
 namespace Core {
 
+				auto& CM = CameraManager::GetInstance();
 				CameraManager::CameraManager() {
 				}
 
@@ -224,17 +225,17 @@ namespace Core {
 				}
 
 				void CameraManager::AddCamera(Camera* p_cam) {
-								m_CameraList[p_cam->GetName()] = std::move(p_cam);
-								m_CurrentCamera = p_cam->GetName();
+								CM.m_CameraList[p_cam->GetName()] = std::move(p_cam);
+								CM.m_CurrentCamera = p_cam->GetName();
 				}
 
 				void CameraManager::Update(double p_deltatime) {
-								this->GetCurrentCamera()->Update(p_deltatime);
+								CM.GetCurrentCamera()->Update(p_deltatime);
 
 				}
 
 				Camera* CameraManager::GetCurrentCamera() {
-								return m_CameraList[m_CurrentCamera];
+								return CM.m_CameraList[CM.m_CurrentCamera];
 				}
 
 }

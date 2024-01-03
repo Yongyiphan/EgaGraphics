@@ -19,7 +19,7 @@ namespace GL_Graphics {
 								}
 								else {
 												Corrupted = true;
-												E_LOG("ERROR", m_filepath << " not found");
+												ELOG("ERROR", m_filepath << " not found");
 								}
 				}
 
@@ -32,7 +32,7 @@ namespace GL_Graphics {
 																auto filepath = shader_dir / (p_GroupName + "." + si.ext);
 																ShaderFile new_File(filepath.string(), st);
 																if (new_File.Corrupted) {
-																				E_LOG("ERROR: ", "File does not exist");
+																				ELOG("ERROR: ", "File does not exist");
 																				continue;
 																}
 																ShaderGrp.emplace_back(new_File);
@@ -77,7 +77,7 @@ namespace GL_Graphics {
 												std::string sourcefile;
 												std::ifstream inFile{ sfile.m_filepath.string(), std::ifstream::in };
 												if (inFile.fail()) {
-																E_LOG("ERROR", "Unable to read file");
+																ELOG("ERROR", "Unable to read file");
 																return success = false;;
 												}
 												std::stringstream buffer;
@@ -88,7 +88,7 @@ namespace GL_Graphics {
 																return success;
 												}
 								}
-								E_LOG("INFO", currShadergrp + " shader group created");
+								ELOG("INFO", currShadergrp + " shader group created");
 
 								return success;
 				}
@@ -139,7 +139,7 @@ namespace GL_Graphics {
 												return found->second.GetShaderID();
 								}
 								else {
-												E_LOG("Warn", "Invalid shader group name");
+												ELOG("Warn", "Invalid shader group name");
 								}
 								return 0;
 				}
@@ -177,7 +177,7 @@ namespace GL_Graphics {
 																				ss << "Shader changed from: ";
 																				ss << CurrentShaderID;
 																				ss << " to: " << p_id;
-																				E_LOG("INFO", ss.str());
+																				ELOG("INFO", ss.str());
 																}
 																CurrentShaderID = p_id;
 												}
@@ -193,7 +193,7 @@ namespace GL_Graphics {
 				int ShaderManager::GetUniformVar(const std::string& p_name) {
 								int location = GLCallV(glGetUniformLocation(CurrentShaderID, p_name.c_str()));
 								if (location == -1) {
-												E_LOG("WARN", "Uniform: " + p_name + " does not exist");
+												ELOG("WARN", "Uniform: " + p_name + " does not exist");
 								}
 								return location;
 				}

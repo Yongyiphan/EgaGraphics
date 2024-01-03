@@ -20,21 +20,18 @@ namespace Core {
 				class Input : public ISingleton<Input> {
 				public:
 								Input();
-								void Reset();
 								void key_cb(int key, int scancode, int action, int mod);
 								void mousebutton_cb(int button, int action, int mod);
 								void mousescroll_cb(double xoffset, double yoffset);
 								void mousepos_cb(double xpos, double ypos);
-								//void framebuffersize_cb();
 
-								bool IsKeyPress(int key);
-								bool IsKeyHold(int key);
-								bool IsKeyPressHold(int key);
+								static bool IsKeyPress(int key);
+								static bool IsKeyHold(int key);
+								static bool IsKeyPressHold(int key);
+								static bool IsMouseScroll();
 
-								//bool IsMousePress(int key);
-								//bool IsMouseHold(int key);
-								void IsMouseScroll();
 								inline std::map<int, KeyInfo*>& GetCurrentSequence() { return ActiveButtonSequence; }
+								static void Reset();
 
 				private:
 								KeyInfo* findKey(int key);

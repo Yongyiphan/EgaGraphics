@@ -61,7 +61,7 @@ namespace Core {
 
 
 
-				class CameraManager {
+				class CameraManager : public ISingleton<CameraManager> {
 
 								std::map<std::string, Camera*> m_CameraList;
 								std::string m_CurrentCamera;
@@ -70,9 +70,9 @@ namespace Core {
 								CameraManager(const CameraManager&) = delete;
 								CameraManager& operator=(const CameraManager&) = delete;
 								~CameraManager();
-								void AddCamera(Camera*);
-								void Update(double p_deltatime);
-								Camera* GetCurrentCamera();
+								static void AddCamera(Camera*);
+								static void Update(double p_deltatime);
+								static Camera* GetCurrentCamera();
 
 
 				};

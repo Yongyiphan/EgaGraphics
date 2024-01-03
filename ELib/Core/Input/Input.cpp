@@ -3,6 +3,7 @@
 
 
 namespace Core {
+				auto& IM = Core::Input::GetInstance();
 
 				Input::Input() {
 								EventDispatcher::GetInstance().RegisterEvent(
@@ -28,9 +29,9 @@ namespace Core {
 				}
 
 				void Input::Reset() {
-								for (auto it = ActiveButtonSequence.begin(); it != ActiveButtonSequence.end();) {
+								for (auto it = IM.ActiveButtonSequence.begin(); it != IM.ActiveButtonSequence.end();) {
 												if (it->second->c_action == GLFW_RELEASE) {
-																it = ActiveButtonSequence.erase(it);
+																it = IM.ActiveButtonSequence.erase(it);
 												}
 												else {
 																++it;
@@ -75,7 +76,7 @@ namespace Core {
 
 
 				bool Input::IsKeyPress(int key) {
-								KeyInfo* fkey = findKey(key);
+								KeyInfo* fkey = IM.findKey(key);
 								bool correct = (fkey && (fkey->p_action == GLFW_PRESS && fkey->c_action == GLFW_RELEASE)) ? true : false;
 								if (fkey && fkey->c_action == GLFW_RELEASE) {
 												fkey->Reset();
@@ -84,7 +85,7 @@ namespace Core {
 				}
 
 				bool Input::IsKeyHold(int key) {
-								KeyInfo* fkey = findKey(key);
+								KeyInfo* fkey = IM.findKey(key);
 								bool _true = (fkey && (fkey->c_action == GLFW_REPEAT || fkey->c_action == GLFW_PRESS)) ? true : false;
 								if (fkey && fkey->c_action == GLFW_RELEASE) {
 												fkey->Reset();
@@ -96,7 +97,7 @@ namespace Core {
 								return IsKeyPress(key) || IsKeyHold(key);
 				}
 
-				void Input::IsMouseScroll() {}
+				bool Input::IsMouseScroll() { return false; }
 
 
 

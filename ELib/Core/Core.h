@@ -28,8 +28,6 @@ namespace Core {
 								void SetCamera_View_Title();
 				public:
 								std::shared_ptr<GLWindow> AppWindow;
-								std::shared_ptr<Input> AppInput;
-								std::shared_ptr<CameraManager> AppCamera;
 								std::shared_ptr<EImGui> EImGui;
 
 								GL_Core();

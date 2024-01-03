@@ -92,7 +92,7 @@ namespace GL_Graphics {
 
 								if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 												auto Err = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-												E_LOG_FATAL(std::format("Something wrong: Frame Buffer ({})", Err).c_str());
+												ELOG_FATAL(std::format("Something wrong: Frame Buffer ({})", Err).c_str());
 												Destroy();
 												m_fbsettings.IsCompleted = false;
 												return;

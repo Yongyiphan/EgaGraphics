@@ -3,6 +3,7 @@
 #include "Render.h"
 #include "Shader/Shader.h"
 #include "Imgui/ImGuiHelper.h"
+#include "Camera/CameraController.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 
@@ -23,19 +24,16 @@ namespace GL_Graphics {
 												newBD.ConstructBufferElement<float>("tex", std::vector<float>{}, false, ReserveSize);
 												newBD.ConstructIndexBuffer(std::vector<GL_Graphics::index_type>{}, false, ReserveSize + BATCH_LIMIT::MAX_BATCH_OBJECT);
 												m_Data.insert({ primitive, std::move(newBD) });
+												batch_object_counter[primitive] = 0;
 								}
 				}
 
-				void BatchInfo::Reset(bool forced) {
-								if (forced) {
-
+				void BatchInfo::Reset() {
+								for (auto& [primitive_, data] : m_Data) {
+												data.Clear(false);
+												batch_object_counter[primitive_] = 0;
 								}
-								else {
-												for (auto& [primitive_, data] : m_Data) {
-																data.Clear();
-												}
-								}
-
+								TotalModelCounter = 0;
 				}
 
 				bool BatchInfo::CheckFilled() {
@@ -46,34 +44,74 @@ namespace GL_Graphics {
 
 				}
 
-				void RenderSystem::BatchFlush(bool) {}
+				constexpr unsigned short RestartIndex = 0xFFFF;
+
+				void RenderSystem::BatchStart() {
+								ClearColor();
+								glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
+								glPrimitiveRestartIndex(RestartIndex);
+				}
+
+				void RenderSystem::BatchEnd() {
+								auto& RI = RenderSystem::GetInstance();
+								RI.BatchFlush(true);
+								RI.BatchRenderPen();
+								RI.BatchRenderDebug();
+								RI.BatchReset();
+								glDisable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
+				}
+
 
 				void RenderSystem::BatchNew(int Layer, ECS::MeshComponent* mcomp) {
-								if (TotalBatchedContainer.find(Layer) == TotalBatchedContainer.end()) {
-												TotalBatchedContainer[Layer] = std::move(std::make_unique<BatchInfo>());
+								if (DefaultBatchedContainer.find(Layer) == DefaultBatchedContainer.end()) {
+												DefaultBatchedContainer[Layer] = std::move(std::make_unique<BatchInfo>());
 								}
-								auto& LatestBatch = TotalBatchedContainer[Layer];
+								auto& LatestBatch = DefaultBatchedContainer[Layer];
 								auto mesh_template = GL_Graphics::GraphicsManager::GetInstance().GetModel(mcomp->GetMeshName());
 								auto template_pos = mesh_template->GetBufferElement<glm::vec3>("pos");
 								auto template_idx = mesh_template->GetIndexBuffer();
 								LatestBatch->Allocate(mesh_template->GetPrimitive(), template_pos->GetElementCount(), template_idx->GetElementCount());
 				}
 
-				void RenderSystem::BatchStart() {
-								ClearColor();
+
+				void RenderSystem::BatchFlush(bool full) {
+								if (!full) {
+												if (HasTextureSlot() || HasBatchSlot()) {
+																return;
+												}
+								}
+
+								glm::mat4 proj_view = Core::CameraManager::GetCurrentCamera()->GetProjectionViewMatrix();
+
 				}
 
-				void RenderSystem::BatchEnd() {
-								RenderSystem::GetInstance().BatchFlush(true);
+				void RenderSystem::BatchReset(bool full) {
+								for (auto& [Layer, _BatchInfo] : DefaultBatchedContainer) {
+												_BatchInfo->Reset();
+								}
+								if (full) {
+												for (auto& _BatchInfo : PenBatchContainer) {
+																_BatchInfo.Reset();
+												}
+												for (auto& [primitive, _BatchInfo] : DebugBatchContainer) {
+																_BatchInfo.Reset();
+												}
+								}
+
 				}
 
+				void RenderSystem::BatchRenderPen() {}
+				void RenderSystem::BatchRenderDebug() {}
+}
+
+namespace GL_Graphics {
 				void RenderSystem::Submit() {}
 
 				void RenderSystem::Submit(int Layer, ECS::MeshComponent* mcomp, ECS::TransformComponent* tcomp, ECS::SpriteComponent* scomp) {
 								if (!tcomp) return;
 								auto& RS = RenderSystem::GetInstance();
 								RS.BatchNew(Layer, mcomp);
-								auto& LatestBatch = RS.TotalBatchedContainer[Layer];
+								auto& LatestBatch = RS.DefaultBatchedContainer[Layer];
 								// Template Info
 								auto mesh_template = GL_Graphics::GraphicsManager::GetInstance().GetModel(mcomp->GetMeshName());
 								auto template_pos = mesh_template->GetBufferElement<glm::vec3>("pos");
@@ -82,30 +120,36 @@ namespace GL_Graphics {
 								auto template_idx = mesh_template->GetIndexBuffer();
 								auto& LatestBatchData = LatestBatch->m_Data[mesh_template->GetPrimitive()];
 
-								auto batch_pos = LatestBatchData.GetBufferElement<glm::vec3>("pos")->GetData();
-								auto batch_clr = LatestBatchData.GetBufferElement<glm::vec3>("clr")->GetData();
-								auto batch_tex = LatestBatchData.GetBufferElement<glm::vec2>("tex")->GetData();
+								auto& batch_pos = LatestBatchData.GetBufferElement<glm::vec3>("pos")->GetData();
+								auto& batch_clr = LatestBatchData.GetBufferElement<glm::vec3>("clr")->GetData();
+								auto& batch_tex = LatestBatchData.GetBufferElement<glm::vec2>("tex")->GetData();
+								auto& batch_tex_id = LatestBatchData.GetBufferElement<float>("tex")->GetData();
 								glm::mat4 trs = GL_Graphics::Model_Xform(*tcomp);
 								for (auto pos : template_pos->GetData()) {
 												batch_pos.push_back(trs * glm::vec4(pos, 1.f));
-												if (mcomp->IsColorSet()) {
-																batch_clr.push_back(mcomp->GetColor());
-												}
 								}
+
+								for (auto clr : template_clr->GetData()) {
+												batch_clr.push_back(mcomp->IsColorSet() ? mcomp->GetColor() : clr);
+								}
+
 								if (scomp) {
 
 								}
 								else {
 												for (auto tex : template_tex->GetData()) {
 																batch_tex.push_back(tex);
+																batch_tex_id.push_back((float)GPU_LIMIT::GL_MAX_TEXTURE_SLOT);
 												}
 								}
 
+								LatestBatch->batch_object_counter[mesh_template->GetPrimitive()]++;
+								LatestBatch->TotalModelCounter++;
+
 								if (LatestBatch->CheckFilled()) {
-												E_LOG_INFO("Batch Full");
+												ELOG_INFO("Batch Full");
 								}
-
-
+								RS.BatchFlush();
 				}
 
 }
@@ -169,12 +213,28 @@ namespace GL_Graphics {
 ///                                                      //
 ////////////////////////////////////////////////////////////
 namespace GL_Graphics {
-				int RenderSystem::AddTextureToSlot(TextureID) {
+				size_t RenderSystem::AddTextureToSlot(TextureID) {
 								return LatestTextureSlot;
 				}
 
 				void RenderSystem::ResetTextureSlotArray() {
 
+				}
+
+				bool RenderSystem::HasTextureSlot() {
+								if (LatestTextureSlot == GPU_LIMIT::GL_MAX_TEXTURE_SLOT - 1) {
+												return false;
+								}
+								return true;
+				}
+
+				bool RenderSystem::HasBatchSlot() {
+								for (auto& [layer, batchinfo] : DefaultBatchedContainer) {
+												if (batchinfo->CheckFilled()) {
+																return false;
+												}
+								}
+								return true;
 				}
 
 				void RenderSystem::SetDebugColor(float r, float g, float b) {

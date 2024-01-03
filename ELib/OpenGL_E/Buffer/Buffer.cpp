@@ -27,12 +27,14 @@ namespace GL_Graphics {
 				}
 
 
-				void BufferData::Clear() {
+				void BufferData::Clear(bool full) {
 								for (auto m_ele : m_Data) {
 												m_ele->Clear();
 								}
-								m_Data.clear();
-								m_IdxBuffer->Clear();
+								if (full) {
+												m_Data.clear();
+												m_IdxBuffer->Clear();
+								}
 
 				}
 
@@ -72,7 +74,7 @@ namespace GL_Graphics {
 								success = GLCall(glCreateVertexArrays(1, &NID.vaoid));
 								if (!success || BD.GetTotalSize() == 0 || NID.vboid == 0) {
 												NID.Completed = false;
-												E_LOG_WARN("Buffer is empty");
+												ELOG_WARN("Buffer is empty");
 												DeleteGLBuffer(NID);
 												return NID;
 								}

@@ -27,7 +27,7 @@
 #define GL_IMAGES_PATH "Images"
 #define GL_SHADER_PATH "Shader"
 
-#define E_LOG(Level, msg) \
+#define ELOG(Level, msg) \
     do { \
         std::stringstream logStream; \
         std::string file(__FILE__); \
@@ -39,15 +39,15 @@
         std::cout << logStream.str() << "\n"; \
     } while (0)
 
-#define E_LOG_INFO(msg) E_LOG("INFO", msg)
-#define E_LOG_WARN(msg) E_LOG("WARN", msg)
-#define E_LOG_ERROR(msg) E_LOG("ERROR", msg)
-#define E_LOG_FATAL(msg) E_LOG("FATAL", msg)
-#define E_LOG_DEBUG(msg) E_LOG("DEBUG", msg)
+#define ELOG_INFO(msg) ELOG("INFO", msg)
+#define ELOG_WARN(msg) ELOG("WARN", msg)
+#define ELOG_ERROR(msg) ELOG("ERROR", msg)
+#define ELOG_FATAL(msg) ELOG("FATAL", msg)
+#define ELOG_DEBUG(msg) ELOG("DEBUG", msg)
 
 #define ASSERT_MSG(msg)\
 do{\
-				E_LOG("FATAL", msg);\
+				ELOG("FATAL", msg);\
 				std::raise(SIGABRT);\
 } while (0)
 
