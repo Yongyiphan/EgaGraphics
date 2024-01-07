@@ -112,3 +112,13 @@ enum BATCH_LIMIT : size_t {
 #define MOUSE_LEFT GLFW_MOUSE_BUTTON_1
 #define MOUSE_RIGHT GLFW_MOUSE_BUTTON_2
 #define MOUSE_MIDDLE GLFW_MOUSE_BUTTON_3
+
+////////////////////////////////////////////////////////////
+///																				   ASSETS                         ///
+////////////////////////////////////////////////////////////
+enum class Assets_Type {
+				TEXTURE,
+				FONT,
+				AUDIO,
+};
+
